@@ -2,7 +2,7 @@ Cxbx-Reloaded
 =============
 
 A branch of the Cxbx source code with support for 64-bit operating systems. 
-This branch has been enamed to Cxbx-Reloaded and started from version 0.0.1 as I plan to completely rewrite large portions of the emulator.
+This branch has been renamed to Cxbx-Reloaded and started from version 0.0.1 as I plan to completely rewrite large portions of the emulator.
 
 
 Main Features:
