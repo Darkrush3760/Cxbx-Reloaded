@@ -8,6 +8,10 @@ Differences from mainline Cxbx:
 - Corrected generation of SizeOfImage field in converted executables (Fixes 0xC000007b on Windows 64-bit)
 - Partial emulation of the FS register without using the LDT (Allows Xbox games to execute on Windows 64-bit) 
 
+Main Features:
+- Able to boot and get ingame in Turok Evolution, and Futurama.  
+- May work with other titles, I have not yet tested much outside of these.
+
 Known Issues:
 - Code to work around enhanced memory protection in 64-bit assumes executable is named "default.exe" and will break on games with multiple XBE files.
 - FS register emulation is incomplete, only essential FS register accesses are hooked.
