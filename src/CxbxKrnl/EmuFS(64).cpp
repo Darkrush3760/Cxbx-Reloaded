@@ -89,29 +89,10 @@ void EmuSetupFSAccess()
 	{
 		EThread = EmuGenerateTLS();
 	}
-}
 
-// TODO: Patch all remaining FS accesses that Xbox games carry out, such as the function below (Not yet intercepted)
-__declspec(naked) void EmuMEaxFS00()
-{
-	__asm
-	{
-		push EBX 
-		push ECX 
-		push EDX
-	}
-	EmuSetupFSAccess();
-	__asm
-	{
-		mov eax, EmuFS
-		mov eax, [eax+0]
-
-		pop EDX
-		pop ECX
-		pop EBX	
-
-		ret
-	}
+	// Set FS Values
+	EmuFS->PrcbData.CurrentThread = (xboxkrnl::KTHREAD*)EThread;
+	EmuFS->NtTib.StackBase = EThread->Tcb.TlsData; 
 }
 
 __declspec(naked) void EmuMEaxFs28()
@@ -262,10 +243,6 @@ xboxkrnl::ETHREAD* EmuGenerateTLS()
 
 	// Add to EThread vector
 	EThreads.push_back(EThread);
-
-	// Set initial FS values
-	EmuFS->PrcbData.CurrentThread = (xboxkrnl::KTHREAD*)EThread;
-	EmuFS->NtTib.StackBase = EThread->Tcb.TlsData;
 
 	// Return pointer
 	return EThread;
