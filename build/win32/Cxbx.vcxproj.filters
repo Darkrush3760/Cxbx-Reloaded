@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{2532b375-8c41-46ae-bcb7-359689d6387e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\jpegdec %28h%29">
+      <UniqueIdentifier>{81198d2a-b157-4000-9236-c164c519db04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{01055097-e97f-4785-93f7-325c9e9f51cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{468ba38f-9808-4a35-ad28-e37fda11e6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\jpegdec %28cpp%29">
+      <UniqueIdentifier>{7ab38b7b-f1bc-4176-be1c-00ad22358d9c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Common\Win32\AlignPosfix1.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Win32\AlignPrefix1.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8\Convert.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\CxbxKrnl.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\DlgControllerConfig.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\DlgVideoConfig.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\Emu.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8Types.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuDInput.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuDSound.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\EmuExe.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuShared.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuXapi.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuXG.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuXOnline.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuXTL.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Error.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Exe.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Win32\Mutex.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\Prolog.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8\PushBuffer.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8\State.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8\VertexBuffer.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\CxbxKrnl\EmuD3D8\VertexShader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\Wnd.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\WndAbout.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\WndMain.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Win32\XBController.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Xbe.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\Win32\XBVideo.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\jpegdec\jconfig.h">
+      <Filter>Include\jpegdec %28h%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\jpegdec\jmorecfg.h">
+      <Filter>Include\jpegdec %28h%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\jpegdec\jpegdec.h">
+      <Filter>Include\jpegdec %28h%29</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Cxbx\jpegdec\jpeglib.h">
+      <Filter>Include\jpegdec %28h%29</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\resource\About.jpg">
+      <Filter>Resource</Filter>
+    </None>
+    <None Include="..\..\resource\Cxbx.ico">
+      <Filter>Resource</Filter>
+    </None>
+    <None Include="..\..\resource\Logo.bmp">
+      <Filter>Resource</Filter>
+    </None>
+    <None Include="..\..\resource\Splash.jpg">
+      <Filter>Resource</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\resource\Cxbx.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Cxbx\DlgControllerConfig.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\DlgVideoConfig.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\EmuExe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\Error.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\Exe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\Win32\Mutex.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\OpenXDK.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\Prolog.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\WinMain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\Wnd.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\WndAbout.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\WndMain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\Win32\XBController.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\Xbe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Common\Win32\XBVideo.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Cxbx\jpegdec\jpegdec.cpp">
+      <Filter>Source\jpegdec %28cpp%29</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
