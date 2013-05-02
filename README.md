@@ -14,7 +14,7 @@ Differences from mainline Cxbx:
 - Partial emulation of the FS register without using the LDT (Allows Xbox games to execute on Windows 64-bit) 
 
 Known Issues:
-- Icluded project file only known to compile with Visual Studio 2010, can be compiled with other versions by using project files from a different branch.
+- Included project file only known to compile with Visual Studio 2010, can be compiled with other versions by using project files from a different branch.
 - Code to work around enhanced memory protection in 64-bit assumes executable is named "default.exe" and will break on games with multiple XBE files.
 - FS register emulation is incomplete, only essential FS register accesses are hooked.
 - Debug builds have very low compatibility, release builds are more compatible, try to avoid running games in Debug mode
