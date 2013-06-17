@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for wxWizard
 // Author:      Vaclav Slavik
 // Created:     2003/03/02
-// RCS-ID:      $Id: xh_wizrd.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

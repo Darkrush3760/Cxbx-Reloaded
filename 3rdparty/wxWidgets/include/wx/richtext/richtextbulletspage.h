@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/4/2006 10:32:31 AM
-// RCS-ID:      $Id: richtextbulletspage.h 50950 2007-12-30 16:11:12Z JS $
+// RCS-ID:      $Id$
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,6 +15,9 @@
 /*!
  * Includes
  */
+
+#include "wx/richtext/richtextdialogpage.h"
+#include "wx/spinbutt.h"        // for wxSpinEvent
 
 /*!
  * Forward declarations
@@ -31,7 +34,7 @@ class wxRichTextCtrl;
 
 ////@begin control identifiers
 #define SYMBOL_WXRICHTEXTBULLETSPAGE_STYLE wxRESIZE_BORDER|wxTAB_TRAVERSAL
-#define SYMBOL_WXRICHTEXTBULLETSPAGE_TITLE _("wxRichTextBulletsPage")
+#define SYMBOL_WXRICHTEXTBULLETSPAGE_TITLE wxEmptyString
 #define SYMBOL_WXRICHTEXTBULLETSPAGE_IDNAME ID_RICHTEXTBULLETSPAGE
 #define SYMBOL_WXRICHTEXTBULLETSPAGE_SIZE wxSize(400, 300)
 #define SYMBOL_WXRICHTEXTBULLETSPAGE_POSITION wxDefaultPosition
@@ -41,10 +44,11 @@ class wxRichTextCtrl;
  * wxRichTextBulletsPage class declaration
  */
 
-class WXDLLIMPEXP_RICHTEXT wxRichTextBulletsPage: public wxPanel
+class WXDLLIMPEXP_RICHTEXT wxRichTextBulletsPage: public wxRichTextDialogPage
 {
     DECLARE_DYNAMIC_CLASS( wxRichTextBulletsPage )
     DECLARE_EVENT_TABLE()
+    DECLARE_HELP_PROVISION()
 
 public:
     /// Constructors
@@ -68,7 +72,7 @@ public:
     virtual bool TransferDataToWindow();
 
     /// Gets the attributes associated with the main formatting dialog
-    wxTextAttrEx* GetAttributes();
+    wxRichTextAttr* GetAttributes();
 
     /// Update for symbol-related controls
     void OnSymbolUpdate( wxUpdateUIEvent& event );

@@ -20,4 +20,3 @@ Known Issues:
 - Incomplete FS register emulation makes Cxbx unstable, may not run if you have lots of background applications open.
 - Debug builds have very low compatibility, release builds are more compatible, try to avoid running games in Debug mode
 - All titles crash if console output is enabled, disabling it allows games to boot.
-

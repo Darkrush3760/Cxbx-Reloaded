@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        statbox.h
+// Name:        wx/statbox.h
 // Purpose:     wxStaticBox base header
 // Author:      Julian Smart
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id: statbox.h 37066 2006-01-23 03:27:34Z MR $
+// RCS-ID:      $Id$
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -18,18 +18,18 @@
 
 #include "wx/control.h"
 
-extern WXDLLEXPORT_DATA(const wxChar) wxStaticBoxNameStr[];
+extern WXDLLIMPEXP_DATA_CORE(const char) wxStaticBoxNameStr[];
 
 // ----------------------------------------------------------------------------
 // wxStaticBox: a grouping box with a label
 // ----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxStaticBoxBase : public wxControl
+class WXDLLIMPEXP_CORE wxStaticBoxBase : public wxControl
 {
 public:
     wxStaticBoxBase() { }
 
-    // overriden base class virtuals
+    // overridden base class virtuals
     virtual bool AcceptsFocus() const { return false; }
     virtual bool HasTransparentBackground() { return true; }
 
@@ -46,8 +46,11 @@ public:
         *borderOther = BORDER;
     }
 
-private:
-    DECLARE_NO_COPY_CLASS(wxStaticBoxBase)
+protected:
+    // choose the default border for this window
+    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
+
+    wxDECLARE_NO_COPY_CLASS(wxStaticBoxBase);
 };
 
 #if defined(__WXUNIVERSAL__)
@@ -61,7 +64,7 @@ private:
 #elif defined(__WXGTK__)
     #include "wx/gtk1/statbox.h"
 #elif defined(__WXMAC__)
-    #include "wx/mac/statbox.h"
+    #include "wx/osx/statbox.h"
 #elif defined(__WXCOCOA__)
     #include "wx/cocoa/statbox.h"
 #elif defined(__WXPM__)

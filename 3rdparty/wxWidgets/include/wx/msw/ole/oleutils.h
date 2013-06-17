@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        oleutils.h
+// Name:        wx/msw/ole/oleutils.h
 // Purpose:     OLE helper routines, OLE debugging support &c
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.02.1998
-// RCS-ID:      $Id: oleutils.h 49804 2007-11-10 01:09:42Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) 1998 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,12 +36,19 @@
 // return true if ok, false otherwise
 inline bool wxOleInitialize()
 {
-    // we need to initialize OLE library
+    HRESULT
 #ifdef __WXWINCE__
-    if ( FAILED(::CoInitializeEx(NULL, COINIT_MULTITHREADED)) )
+     hr = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 #else
-    if ( FAILED(::OleInitialize(NULL)) )
+     hr = ::OleInitialize(NULL);
 #endif
+
+    // RPC_E_CHANGED_MODE indicates that OLE had been already initialized
+    // before, albeit with different mode. Don't consider it to be an error as
+    // we don't actually care ourselves about the mode used so this allows the
+    // main application to call OleInitialize() on its own before we do if it
+    // needs non-default mode.
+    if ( hr != RPC_E_CHANGED_MODE && FAILED(hr) )
     {
         wxLogError(_("Cannot initialize OLE"));
 
@@ -75,7 +82,7 @@ inline void ReleaseInterface(IUnknown *pIUnk)
 #define   RELEASE_AND_NULL(p)   if ( (p) != NULL ) { p->Release(); p = NULL; };
 
 // return true if the iid is in the array
-extern bool IsIidFromList(REFIID riid, const IID *aIids[], size_t nCount);
+extern WXDLLIMPEXP_CORE bool IsIidFromList(REFIID riid, const IID *aIids[], size_t nCount);
 
 // ============================================================================
 // IUnknown implementation helpers
@@ -133,9 +140,10 @@ private:
     wxAutoULong           m_cRef
 
 // macros for declaring supported interfaces
-// NB: you should write ADD_INTERFACE(Foo) and not ADD_INTERFACE(IID_IFoo)!
+// NB: ADD_IID prepends IID_I whereas ADD_RAW_IID does not
 #define BEGIN_IID_TABLE(cname)  const IID *cname::ms_aIids[] = {
 #define ADD_IID(iid)                                             &IID_I##iid,
+#define ADD_RAW_IID(iid)                                         &iid,
 #define END_IID_TABLE                                          }
 
 // implementation is as straightforward as possible
@@ -143,7 +151,7 @@ private:
 #define   IMPLEMENT_IUNKNOWN_METHODS(classname)                               \
   STDMETHODIMP classname::QueryInterface(REFIID riid, void **ppv)             \
   {                                                                           \
-    wxLogQueryInterface(_T(#classname), riid);                                \
+    wxLogQueryInterface(wxT(#classname), riid);                               \
                                                                               \
     if ( IsIidFromList(riid, ms_aIids, WXSIZEOF(ms_aIids)) ) {                \
       *ppv = this;                                                            \
@@ -160,14 +168,14 @@ private:
                                                                               \
   STDMETHODIMP_(ULONG) classname::AddRef()                                    \
   {                                                                           \
-    wxLogAddRef(_T(#classname), m_cRef);                                      \
+    wxLogAddRef(wxT(#classname), m_cRef);                                     \
                                                                               \
     return ++m_cRef;                                                          \
   }                                                                           \
                                                                               \
   STDMETHODIMP_(ULONG) classname::Release()                                   \
   {                                                                           \
-    wxLogRelease(_T(#classname), m_cRef);                                     \
+    wxLogRelease(wxT(#classname), m_cRef);                                    \
                                                                               \
     if ( --m_cRef == wxAutoULong(0) ) {                                                    \
       delete this;                                                            \
@@ -184,17 +192,17 @@ private:
 // VZ: I don't know it's not done for compilers other than VC++ but I leave it
 //     as is. Please note, though, that tracing OLE interface calls may be
 //     incredibly useful when debugging OLE programs.
-#if defined(__WXDEBUG__) && ( ( defined(__VISUALC__) && (__VISUALC__ >= 1000) ) || defined(__MWERKS__) )
+#if defined(__WXDEBUG__) && (( defined(__VISUALC__) && (__VISUALC__ >= 1000) ))
 // ----------------------------------------------------------------------------
 // All OLE specific log functions have DebugTrace level (as LogTrace)
 // ----------------------------------------------------------------------------
 
 // tries to translate riid into a symbolic name, if possible
-void wxLogQueryInterface(const wxChar *szInterface, REFIID riid);
+WXDLLIMPEXP_CORE void wxLogQueryInterface(const wxChar *szInterface, REFIID riid);
 
 // these functions print out the new value of reference counter
-void wxLogAddRef (const wxChar *szInterface, ULONG cRef);
-void wxLogRelease(const wxChar *szInterface, ULONG cRef);
+WXDLLIMPEXP_CORE void wxLogAddRef (const wxChar *szInterface, ULONG cRef);
+WXDLLIMPEXP_CORE void wxLogRelease(const wxChar *szInterface, ULONG cRef);
 
 #else   //!__WXDEBUG__
   #define   wxLogQueryInterface(szInterface, riid)
@@ -204,43 +212,40 @@ void wxLogRelease(const wxChar *szInterface, ULONG cRef);
 
 // wrapper around BSTR type (by Vadim Zeitlin)
 
-class WXDLLEXPORT wxBasicString
+class WXDLLIMPEXP_CORE wxBasicString
 {
 public:
     // ctors & dtor
-    wxBasicString(const char *sz);
     wxBasicString(const wxString& str);
+    wxBasicString(const wxBasicString& bstr);
     ~wxBasicString();
 
-    void Init(const char* sz);
+    wxBasicString& operator=(const wxBasicString& bstr);
 
     // accessors
-    // just get the string
-    operator BSTR() const { return m_wzBuf; }
-    // retrieve a copy of our string - caller must SysFreeString() it later!
-    BSTR Get() const { return SysAllocString(m_wzBuf); }
+        // just get the string
+    operator BSTR() const { return m_bstrBuf; }
+        // retrieve a copy of our string - caller must SysFreeString() it later!
+    BSTR Get() const { return SysAllocString(m_bstrBuf); }
 
 private:
-    // @@@ not implemented (but should be)
-    wxBasicString(const wxBasicString&);
-    wxBasicString& operator=(const wxBasicString&);
-
-    OLECHAR *m_wzBuf;     // actual string
+    // actual string
+    BSTR m_bstrBuf;
 };
 
 #if wxUSE_VARIANT
 // Convert variants
 class WXDLLIMPEXP_FWD_BASE wxVariant;
 
-WXDLLEXPORT bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant);
-WXDLLEXPORT bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant);
+WXDLLIMPEXP_CORE bool wxConvertVariantToOle(const wxVariant& variant, VARIANTARG& oleVariant);
+WXDLLIMPEXP_CORE bool wxConvertOleToVariant(const VARIANTARG& oleVariant, wxVariant& variant);
 #endif // wxUSE_VARIANT
 
 // Convert string to Unicode
-WXDLLEXPORT BSTR wxConvertStringToOle(const wxString& str);
+WXDLLIMPEXP_CORE BSTR wxConvertStringToOle(const wxString& str);
 
 // Convert string from BSTR to wxString
-WXDLLEXPORT wxString wxConvertStringFromOle(BSTR bStr);
+WXDLLIMPEXP_CORE wxString wxConvertStringFromOle(BSTR bStr);
 
 #else // !wxUSE_OLE
 

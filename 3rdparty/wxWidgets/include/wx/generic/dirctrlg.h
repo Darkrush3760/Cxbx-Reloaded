@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        dirctrlg.h
+// Name:        wx/generic/dirctrlg.h
 // Purpose:     wxGenericDirCtrl class
 //              Builds on wxDirCtrl class written by Robert Roebling for the
 //              wxFile application, modified by Harm van der Heijden.
@@ -7,17 +7,13 @@
 // Author:      Robert Roebling, Harm van der Heijden, Julian Smart et al
 // Modified by:
 // Created:     21/3/2000
-// RCS-ID:      $Id: dirctrlg.h 53135 2008-04-12 02:31:04Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) Robert Roebling, Harm van der Heijden, Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WX_DIRCTRL_H_
 #define _WX_DIRCTRL_H_
-
-#if wxUSE_DIRDLG || wxUSE_FILEDLG
-    #include "wx/imaglist.h"
-#endif
 
 #if wxUSE_DIRDLG
 
@@ -31,7 +27,6 @@
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
-class WXDLLIMPEXP_FWD_CORE wxImageList;
 class WXDLLIMPEXP_FWD_BASE wxHashTable;
 
 //-----------------------------------------------------------------------------
@@ -44,19 +39,23 @@ enum
     wxDIRCTRL_DIR_ONLY       = 0x0010,
     // When setting the default path, select the first file in the directory
     wxDIRCTRL_SELECT_FIRST   = 0x0020,
-    // Show the filter list
+#if WXWIN_COMPATIBILITY_2_8
+    // Unused, for compatibility only
     wxDIRCTRL_SHOW_FILTERS   = 0x0040,
+#endif // WXWIN_COMPATIBILITY_2_8
     // Use 3D borders on internal controls
     wxDIRCTRL_3D_INTERNAL    = 0x0080,
     // Editable labels
-    wxDIRCTRL_EDIT_LABELS    = 0x0100
+    wxDIRCTRL_EDIT_LABELS    = 0x0100,
+    // Allow multiple selection
+    wxDIRCTRL_MULTIPLE       = 0x0200
 };
 
 //-----------------------------------------------------------------------------
 // wxDirItemData
 //-----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxDirItemData : public wxTreeItemData
+class WXDLLIMPEXP_CORE wxDirItemData : public wxTreeItemData
 {
 public:
     wxDirItemData(const wxString& path, const wxString& name, bool isDir);
@@ -78,7 +77,7 @@ public:
 
 class WXDLLIMPEXP_FWD_CORE wxDirFilterListCtrl;
 
-class WXDLLEXPORT wxGenericDirCtrl: public wxControl
+class WXDLLIMPEXP_CORE wxGenericDirCtrl: public wxControl
 {
 public:
     wxGenericDirCtrl();
@@ -86,7 +85,7 @@ public:
               const wxString &dir = wxDirDialogDefaultFolderStr,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
-              long style = wxDIRCTRL_3D_INTERNAL|wxSUNKEN_BORDER,
+              long style = wxDIRCTRL_3D_INTERNAL,
               const wxString& filter = wxEmptyString,
               int defaultFilter = 0,
               const wxString& name = wxTreeCtrlNameStr )
@@ -99,7 +98,7 @@ public:
               const wxString &dir = wxDirDialogDefaultFolderStr,
               const wxPoint& pos = wxDefaultPosition,
               const wxSize& size = wxDefaultSize,
-              long style = wxDIRCTRL_3D_INTERNAL|wxSUNKEN_BORDER,
+              long style = wxDIRCTRL_3D_INTERNAL,
               const wxString& filter = wxEmptyString,
               int defaultFilter = 0,
               const wxString& name = wxTreeCtrlNameStr );
@@ -126,11 +125,16 @@ public:
 
     // Get dir or filename
     virtual wxString GetPath() const;
+    virtual void GetPaths(wxArrayString& paths) const;
 
     // Get selected filename path only (else empty string).
     // I.e. don't count a directory as a selection
     virtual wxString GetFilePath() const;
+    virtual void GetFilePaths(wxArrayString& paths) const;
     virtual void SetPath(const wxString& path);
+
+    virtual void SelectPath(const wxString& path, bool select = true);
+    virtual void SelectPaths(const wxArrayString& paths);
 
     virtual void ShowHidden( bool show );
     virtual bool GetShowHidden() { return m_showHidden; }
@@ -146,13 +150,10 @@ public:
     virtual wxTreeCtrl* GetTreeCtrl() const { return m_treeCtrl; }
     virtual wxDirFilterListCtrl* GetFilterListCtrl() const { return m_filterListCtrl; }
 
+    virtual void UnselectAll();
+
     // Helper
     virtual void SetupSections();
-
-#if WXWIN_COMPATIBILITY_2_4
-    // Parse the filter into an array of filters and an array of descriptions
-    virtual int ParseFilter(const wxString& filterStr, wxArrayString& filters, wxArrayString& descriptions);
-#endif // WXWIN_COMPATIBILITY_2_4
 
     // Find the child that matches the first part of 'path'.
     // E.g. if a child path is "/usr" and 'path' is "/usr/include"
@@ -168,6 +169,9 @@ public:
 
     // Collapse the entire tree
     virtual void CollapseTree();
+
+    // overridden base class methods
+    virtual void SetFocus();
 
 protected:
     virtual void ExpandRoot();
@@ -185,6 +189,8 @@ protected:
     bool ExtractWildcard(const wxString& filterStr, int n, wxString& filter, wxString& description);
 
 private:
+    void PopulateNode(wxTreeItemId node);
+
     bool            m_showHidden;
     wxTreeItemId    m_rootId;
     wxString        m_defaultPath; // Starting path
@@ -198,14 +204,14 @@ private:
 private:
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxGenericDirCtrl)
-    DECLARE_NO_COPY_CLASS(wxGenericDirCtrl)
+    wxDECLARE_NO_COPY_CLASS(wxGenericDirCtrl);
 };
 
 //-----------------------------------------------------------------------------
 // wxDirFilterListCtrl
 //-----------------------------------------------------------------------------
 
-class WXDLLEXPORT wxDirFilterListCtrl: public wxChoice
+class WXDLLIMPEXP_CORE wxDirFilterListCtrl: public wxChoice
 {
 public:
     wxDirFilterListCtrl() { Init(); }
@@ -238,7 +244,7 @@ protected:
 
     DECLARE_EVENT_TABLE()
     DECLARE_CLASS(wxDirFilterListCtrl)
-    DECLARE_NO_COPY_CLASS(wxDirFilterListCtrl)
+    wxDECLARE_NO_COPY_CLASS(wxDirFilterListCtrl);
 };
 
 #if !defined(__WXMSW__) && !defined(__WXMAC__) && !defined(__WXPM__)
@@ -255,9 +261,11 @@ protected:
 // wxFileIconsTable - use wxTheFileIconsTable which is created as necessary
 //-------------------------------------------------------------------------
 
-#if wxUSE_DIRDLG || wxUSE_FILEDLG
+#if wxUSE_DIRDLG || wxUSE_FILEDLG || wxUSE_FILECTRL
 
-class WXDLLEXPORT wxFileIconsTable
+class WXDLLIMPEXP_FWD_CORE wxImageList;
+
+class WXDLLIMPEXP_CORE wxFileIconsTable
 {
 public:
     wxFileIconsTable();
@@ -287,9 +295,9 @@ protected:
 };
 
 // The global fileicons table
-extern WXDLLEXPORT_DATA(wxFileIconsTable *) wxTheFileIconsTable;
+extern WXDLLIMPEXP_DATA_CORE(wxFileIconsTable *) wxTheFileIconsTable;
 
-#endif // wxUSE_DIRDLG || wxUSE_FILEDLG
+#endif // wxUSE_DIRDLG || wxUSE_FILEDLG || wxUSE_FILECTRL
 
 #endif
     // _WX_DIRCTRLG_H_

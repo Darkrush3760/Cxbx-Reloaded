@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for wxMDI
 // Author:      David M. Falkinder & Vaclav Slavik
 // Created:     14/02/2005
-// RCS-ID:      $Id: xh_mdi.h 49804 2007-11-10 01:09:42Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2005 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

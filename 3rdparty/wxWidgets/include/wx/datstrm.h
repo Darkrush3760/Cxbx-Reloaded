@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        datstrm.h
+// Name:        wx/datstrm.h
 // Purpose:     Data stream classes
 // Author:      Guilhem Lavaux
 // Modified by: Mickael Gilabert
 // Created:     28/06/1998
-// RCS-ID:      $Id: datstrm.h 38576 2006-04-05 16:10:08Z VZ $
+// RCS-ID:      $Id$
 // Copyright:   (c) Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ class WXDLLIMPEXP_BASE wxDataInputStream
 {
 public:
 #if wxUSE_UNICODE
-    wxDataInputStream(wxInputStream& s, const wxMBConv& conv = wxConvAuto());
+    wxDataInputStream(wxInputStream& s, const wxMBConv& conv = wxConvUTF8 );
 #else
     wxDataInputStream(wxInputStream& s);
 #endif
@@ -79,6 +79,11 @@ public:
 
     void BigEndianOrdered(bool be_order) { m_be_order = be_order; }
 
+#if wxUSE_UNICODE
+    void SetConv( const wxMBConv &conv );
+    wxMBConv *GetConv() const { return m_conv; }
+#endif
+
 protected:
     wxInputStream *m_input;
     bool m_be_order;
@@ -86,14 +91,14 @@ protected:
     wxMBConv *m_conv;
 #endif
 
-    DECLARE_NO_COPY_CLASS(wxDataInputStream)
+    wxDECLARE_NO_COPY_CLASS(wxDataInputStream);
 };
 
 class WXDLLIMPEXP_BASE wxDataOutputStream
 {
 public:
 #if wxUSE_UNICODE
-    wxDataOutputStream(wxOutputStream& s, const wxMBConv& conv = wxConvAuto());
+    wxDataOutputStream(wxOutputStream& s, const wxMBConv& conv = wxConvUTF8 );
 #else
     wxDataOutputStream(wxOutputStream& s);
 #endif
@@ -132,7 +137,6 @@ public:
     void Write8(const wxUint8 *buffer, size_t size);
     void WriteDouble(const double *buffer, size_t size);
 
-    wxDataOutputStream& operator<<(const wxChar *string);
     wxDataOutputStream& operator<<(const wxString& string);
     wxDataOutputStream& operator<<(wxInt8 c);
     wxDataOutputStream& operator<<(wxInt16 i);
@@ -153,6 +157,11 @@ public:
 
     void BigEndianOrdered(bool be_order) { m_be_order = be_order; }
 
+#if wxUSE_UNICODE
+    void SetConv( const wxMBConv &conv );
+    wxMBConv *GetConv() const { return m_conv; }
+#endif
+
 protected:
     wxOutputStream *m_output;
     bool m_be_order;
@@ -160,7 +169,7 @@ protected:
     wxMBConv *m_conv;
 #endif
 
-    DECLARE_NO_COPY_CLASS(wxDataOutputStream)
+    wxDECLARE_NO_COPY_CLASS(wxDataOutputStream);
 };
 
 #endif
