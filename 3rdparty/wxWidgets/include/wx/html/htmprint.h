@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/html/htmprint.h
+// Name:        htmprint.h
 // Purpose:     html printing classes
 // Author:      Vaclav Slavik
 // Created:     25/09/99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: htmprint.h 62758 2009-12-01 20:21:46Z BP $
 // Copyright:   (c) Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -39,9 +39,7 @@ public:
     // Following 3 methods *must* be called before any call to Render:
 
     // Assign DC to this render
-    void SetDC(wxDC *dc, double pixel_scale = 1.0)
-        { SetDC(dc, pixel_scale, pixel_scale); }
-    void SetDC(wxDC *dc, double pixel_scale, double font_scale);
+    void SetDC(wxDC *dc, double pixel_scale = 1.0);
 
     // Sets size of output rectangle, in pixels. Note that you *can't* change
     // width of the rectangle between calls to Render! (You can freely change height.)
@@ -80,14 +78,11 @@ public:
     //
     // CAUTION! Render() changes DC's user scale and does NOT restore it!
     int Render(int x, int y, wxArrayInt& known_pagebreaks, int from = 0,
-               int dont_render = false, int to = INT_MAX);
-
-    // returns total width of the html document
-    int GetTotalWidth() const;
+               int dont_render = FALSE, int to = INT_MAX);
 
     // returns total height of the html document
     // (compare Render's return value with this)
-    int GetTotalHeight() const;
+    int GetTotalHeight();
 
 private:
     wxDC *m_DC;
@@ -96,7 +91,7 @@ private:
     wxHtmlContainerCell *m_Cells;
     int m_MaxWidth, m_Width, m_Height;
 
-    wxDECLARE_NO_COPY_CLASS(wxHtmlDCRenderer);
+    DECLARE_NO_COPY_CLASS(wxHtmlDCRenderer)
 };
 
 
@@ -174,20 +169,6 @@ public:
     static void CleanUpStatics();
 
 private:
-    // this function is called by the base class OnPreparePrinting()
-    // implementation and by default checks whether the document fits into
-    // pageArea horizontally and warns the user if it does not and, if we're
-    // going to print and not just to preview the document, giving him the
-    // possibility to cancel printing
-    //
-    // you may override it to either suppress this check if truncation of the
-    // HTML being printed is acceptable or, on the contrary, add more checks to
-    // it, e.g. for the fit in the vertical direction if the document should
-    // always appear on a single page
-    //
-    // return true if printing should go ahead or false to cancel it (the
-    // return value is ignored when previewing)
-    virtual bool CheckFit(const wxSize& pageArea, const wxSize& docArea) const;
 
     void RenderPage(wxDC *dc, int page);
             // renders one page into dc
@@ -199,6 +180,7 @@ private:
 
 private:
     int m_NumPages;
+    //int m_PageBreaks[wxHTML_PRINT_MAX_PAGES];
     wxArrayInt m_PageBreaks;
 
     wxString m_Document, m_BasePath;
@@ -212,7 +194,7 @@ private:
     // list of HTML filters
     static wxList m_Filters;
 
-    wxDECLARE_NO_COPY_CLASS(wxHtmlPrintout);
+    DECLARE_NO_COPY_CLASS(wxHtmlPrintout)
 };
 
 
@@ -274,15 +256,19 @@ public:
             // return page setting data objects.
             // (You can set their parameters.)
 
+#if wxABI_VERSION >= 20805
     wxWindow* GetParentWindow() const { return m_ParentWindow; }
             // get the parent window
     void SetParentWindow(wxWindow* window) { m_ParentWindow = window; }
             // set the parent window
+#endif
 
+#if wxABI_VERSION >= 20811
     const wxString& GetName() const { return m_Name; }
             // get the printout name
     void SetName(const wxString& name) { m_Name = name; }
             // set the printout name
+#endif
 
 protected:
     virtual wxHtmlPrintout *CreatePrintout();
@@ -307,7 +293,7 @@ private:
     wxString m_Headers[2], m_Footers[2];
     wxWindow *m_ParentWindow;
 
-    wxDECLARE_NO_COPY_CLASS(wxHtmlEasyPrinting);
+    DECLARE_NO_COPY_CLASS(wxHtmlEasyPrinting)
 };
 
 

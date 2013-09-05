@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/html/htmldefs.h
+// Name:        htmldefs.h
 // Purpose:     constants for wxhtml library
 // Author:      Vaclav Slavik
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: htmldefs.h 40823 2006-08-25 16:52:58Z VZ $
 // Copyright:   (c) 1999 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -94,6 +94,9 @@
 
     /* size of temporary buffer used during parsing */
 #define wxHTML_BUFLEN                  1024
+
+    /* maximum number of pages printable via html printing */
+#define wxHTML_PRINT_MAX_PAGES          999
 
 #endif // wxUSE_HTML
 

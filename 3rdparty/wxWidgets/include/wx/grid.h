@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: grid.h 33948 2005-05-04 18:57:50Z JS $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -14,9 +14,5 @@
 
 #include "wx/generic/grid.h"
 
-// these headers used to be included from the above header but isn't any more,
-// still do it from here for compatibility
-#include "wx/generic/grideditors.h"
-#include "wx/generic/gridctrl.h"
-
-#endif // _WX_GRID_H_BASE_
+#endif
+    // _WX_GRID_H_BASE_

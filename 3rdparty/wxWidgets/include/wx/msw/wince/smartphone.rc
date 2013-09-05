@@ -1,15 +1,17 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/msw/wince/smartphone.rc
+// Name:        wx/msw/wince/smartphone.h
 // Purpose:     resources for MS Smartphone build
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     01.05.2004
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: smartphone.rc 30036 2004-10-20 15:14:46Z VZ $
 // Copyright:   (c) Wlodzimierz Skiba
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <aygshell.h>
+
+#include "wx/msw/wince/resources.h"
 
 STRINGTABLE
 BEGIN

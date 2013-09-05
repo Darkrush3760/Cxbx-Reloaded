@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/helphtml.h
+// Name:        helphtml.h
 // Purpose:     Includes wx/html/helpctrl.h, for wxHtmlHelpController.
 // Author:      Julian Smart
 // Modified by:
 // Created:     2003-05-24
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: helphtml.h 27408 2004-05-23 20:53:33Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

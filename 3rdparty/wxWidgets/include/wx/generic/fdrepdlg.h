@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/generic/fdrepdlg.h
+// Name:        wx/msw/fdrepdlg.h
 // Purpose:     wxGenericFindReplaceDialog class
 // Author:      Markus Greither
 // Modified by:
 // Created:     25/05/2001
-// RCS-ID:      $Id$
+// RCS-ID:
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,15 +12,15 @@
 #ifndef _WX_GENERIC_FDREPDLG_H_
 #define _WX_GENERIC_FDREPDLG_H_
 
-class WXDLLIMPEXP_FWD_CORE wxCheckBox;
-class WXDLLIMPEXP_FWD_CORE wxRadioBox;
-class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
+class WXDLLEXPORT wxCheckBox;
+class WXDLLEXPORT wxRadioBox;
+class WXDLLEXPORT wxTextCtrl;
 
 // ----------------------------------------------------------------------------
 // wxGenericFindReplaceDialog: dialog for searching / replacing text
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxGenericFindReplaceDialog : public wxFindReplaceDialogBase
+class WXDLLEXPORT wxGenericFindReplaceDialog : public wxFindReplaceDialogBase
 {
 public:
     wxGenericFindReplaceDialog() { Init(); }

@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     22.01.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: scrarrow.h 42715 2006-10-30 12:24:13Z VS $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,17 +23,17 @@
 // to derive from the wxControlWithArrows interface and implement its methods.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_FWD_CORE wxControlWithArrows;
-class WXDLLIMPEXP_FWD_CORE wxDC;
-class WXDLLIMPEXP_FWD_CORE wxMouseEvent;
-class WXDLLIMPEXP_FWD_CORE wxRect;
-class WXDLLIMPEXP_FWD_CORE wxRenderer;
+class WXDLLEXPORT wxControlWithArrows;
+class WXDLLEXPORT wxDC;
+class WXDLLEXPORT wxMouseEvent;
+class WXDLLEXPORT wxRect;
+class WXDLLEXPORT wxRenderer;
 
 // ----------------------------------------------------------------------------
 // wxScrollArrows: an abstraction of scrollbar arrow
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxScrollArrows
+class WXDLLEXPORT wxScrollArrows
 {
 public:
     enum Arrow
@@ -79,7 +79,7 @@ private:
 // wxControlWithArrows: interface implemented by controls using wxScrollArrows
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxControlWithArrows
+class WXDLLEXPORT wxControlWithArrows
 {
 public:
     virtual ~wxControlWithArrows() {}

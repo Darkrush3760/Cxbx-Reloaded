@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.11.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: fontutil.h 27408 2004-05-23 20:53:33Z JS $
 // Copyright:   (c) wxWidgets team
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ wxLoadQueryNearestFont(int pointSize,
                        bool underlined,
                        const wxString &facename,
                        wxFontEncoding encoding,
-                       wxString* xFontName = NULL);
+                       wxString* xFontName = (wxString *)NULL);
 
 // returns the font specified by the given XLFD
 extern wxNativeFont wxLoadFont(const wxString& fontSpec);

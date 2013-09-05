@@ -3,7 +3,7 @@
 // Purpose:     declaration of wxAboutDialog class
 // Author:      Vadim Zeitlin
 // Created:     2006-10-07
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: aboutdlg.h 58748 2009-02-08 09:46:03Z VZ $
 // Copyright:   (c) 2006 Vadim Zeitlin <vadim@wxwindows.org>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,45 +31,35 @@ public:
     // accessors for various simply fields
     // -----------------------------------
 
-    // name of the program, if not used defaults to wxApp::GetAppDisplayName()
+    // name of the program, if not used defaults wxApp::GetAppName()
     void SetName(const wxString& name) { m_name = name; }
     wxString GetName() const
-        { return m_name.empty() ? wxTheApp->GetAppDisplayName() : m_name; }
+        { return m_name.empty() ? wxTheApp->GetAppName() : m_name; }
 
-    // version should contain program version without "version" word (e.g.,
-    // "1.2" or "RC2") while longVersion may contain the full version including
-    // "version" word (e.g., "Version 1.2" or "Release Candidate 2")
-    //
-    // if longVersion is empty, it is automatically constructed from version
-    //
-    // generic and gtk native: use short version only, as a suffix to the
-    // program name msw and osx native: use long version
-    void SetVersion(const wxString& version,
-                    const wxString& longVersion = wxString());
-
+    // version of the program, in free format (but without "version" word)
+    void SetVersion(const wxString& version) { m_version = version; }
     bool HasVersion() const { return !m_version.empty(); }
-    const wxString& GetVersion() const { return m_version; }
-    const wxString& GetLongVersion() const { return m_longVersion; }
+    wxString GetVersion() const { return m_version; }
 
     // brief, but possibly multiline, description of the program
     void SetDescription(const wxString& desc) { m_description = desc; }
     bool HasDescription() const { return !m_description.empty(); }
-    const wxString& GetDescription() const { return m_description; }
+    wxString GetDescription() const { return m_description; }
 
     // short string containing the program copyright information
     void SetCopyright(const wxString& copyright) { m_copyright = copyright; }
     bool HasCopyright() const { return !m_copyright.empty(); }
-    const wxString& GetCopyright() const { return m_copyright; }
+    wxString GetCopyright() const { return m_copyright; }
 
     // long, multiline string containing the text of the program licence
     void SetLicence(const wxString& licence) { m_licence = licence; }
     void SetLicense(const wxString& licence) { m_licence = licence; }
     bool HasLicence() const { return !m_licence.empty(); }
-    const wxString& GetLicence() const { return m_licence; }
+    wxString GetLicence() const { return m_licence; }
 
     // icon to be shown in the dialog, defaults to the main frame icon
     void SetIcon(const wxIcon& icon) { m_icon = icon; }
-    bool HasIcon() const { return m_icon.IsOk(); }
+    bool HasIcon() const { return m_icon.Ok(); }
     wxIcon GetIcon() const;
 
     // web site for the program and its description (defaults to URL itself if
@@ -82,8 +72,8 @@ public:
 
     bool HasWebSite() const { return !m_url.empty(); }
 
-    const wxString& GetWebSiteURL() const { return m_url; }
-    const wxString& GetWebSiteDescription() const { return m_urlDesc; }
+    wxString GetWebSiteURL() const { return m_url; }
+    wxString GetWebSiteDescription() const { return m_urlDesc; }
 
     // accessors for the arrays
     // ------------------------
@@ -138,14 +128,15 @@ public:
     // artists and translators) as a one long multiline string
     wxString GetDescriptionAndCredits() const;
 
+#if wxABI_VERSION >= 20810
     // returns the copyright with the (C) string substituted by the Unicode
     // character U+00A9
     wxString GetCopyrightToDisplay() const;
+#endif // wx 2.8.10+
 
 private:
     wxString m_name,
              m_version,
-             m_longVersion,
              m_description,
              m_copyright,
              m_licence;
@@ -162,7 +153,7 @@ private:
 };
 
 // functions to show the about dialog box
-WXDLLIMPEXP_ADV void wxAboutBox(const wxAboutDialogInfo& info, wxWindow* parent = NULL);
+WXDLLIMPEXP_ADV void wxAboutBox(const wxAboutDialogInfo& info);
 
 #endif // wxUSE_ABOUTDLG
 

@@ -4,7 +4,7 @@
 // Author:      Jaakko Salli
 // Modified by:
 // Created:     Aug-30-2006
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: bmpcbox.h 42046 2006-10-16 09:30:01Z ABX $
 // Copyright:   (c) Jaakko Salli
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -86,13 +86,28 @@ public:
     virtual ~wxBitmapComboBox();
 
     // Adds item with image to the end of the combo box.
-    int Append(const wxString& item, const wxBitmap& bitmap = wxNullBitmap);
-    int Append(const wxString& item, const wxBitmap& bitmap, void *clientData);
-    int Append(const wxString& item, const wxBitmap& bitmap, wxClientData *clientData);
+    int Append(const wxString& item, const wxBitmap& bitmap = wxNullBitmap)
+        { return DoAppendWithImage(item, bitmap); }
 
-    // Inserts item with image into the list before pos. Not valid for wxCB_SORT
+    int Append(const wxString& item, const wxBitmap& bitmap, void *clientData)
+        { int n = DoAppendWithImage(item, bitmap); SetClientData(n, clientData); return n; }
+    int Append(const wxString& item, const wxBitmap& bitmap, wxClientData *clientData)
+        { int n = DoAppendWithImage(item, bitmap); SetClientObject(n, clientData); return n; }
+
+    // Returns size of image used in list.
+    virtual wxSize GetBitmapSize() const
+    {
+        return m_usedImgSize;
+    }
+
+    // Returns the image of the item with the given index.
+    virtual wxBitmap GetItemBitmap(unsigned int n) const;
+
+    // Inserts item with image into the list before pos. Not valid for wxCB_SORT or wxCB_SORT
     // styles, use Append instead.
-    int Insert(const wxString& item, const wxBitmap& bitmap, unsigned int pos);
+    int Insert(const wxString& item, const wxBitmap& bitmap, unsigned int pos)
+        { return DoInsertWithImage(item, bitmap, pos); }
+
     int Insert(const wxString& item, const wxBitmap& bitmap,
                unsigned int pos, void *clientData);
     int Insert(const wxString& item, const wxBitmap& bitmap,
@@ -100,7 +115,9 @@ public:
 
     // Sets the image for the given item.
     virtual void SetItemBitmap(unsigned int n, const wxBitmap& bitmap);
-    virtual bool SetFont(const wxFont& font);
+
+    virtual void Clear();
+    virtual void Delete(unsigned int n);
 
 protected:
 
@@ -109,25 +126,41 @@ protected:
     virtual wxCoord OnMeasureItem(size_t item) const;
     virtual wxCoord OnMeasureItemWidth(size_t item) const;
 
-    // Event handlers
-    void OnSize(wxSizeEvent& event);
+    virtual int DoAppendWithImage(const wxString& item, const wxBitmap& bitmap);
+    virtual int DoInsertWithImage(const wxString& item, const wxBitmap& bitmap,
+                                  unsigned int pos);
+
+    virtual int DoAppend(const wxString& item);
+    virtual int DoInsert(const wxString& item, unsigned int pos);
+
+    virtual bool SetFont(const wxFont& font);
 
     virtual wxSize DoGetBestSize() const;
 
-    virtual wxItemContainer* GetItemContainer() { return this; }
-    virtual wxWindow* GetControl() { return this; }
+    // Event handlers
+    void OnSize(wxSizeEvent& event);
 
-    // wxItemContainer implementation
-    virtual int DoInsertItems(const wxArrayStringsAdapter & items,
-                              unsigned int pos,
-                              void **clientData, wxClientDataType type);
-    virtual void DoClear();
-    virtual void DoDeleteOneItem(unsigned int n);
+    // Recalculates amount of empty space needed in front of
+    // text in control itself.
+    void DetermineIndent();
+
+    bool OnAddBitmap(const wxBitmap& bitmap);
+
+    // Adds image to position - called in Append/Insert before
+    // string is added.
+    bool DoInsertBitmap(const wxBitmap& image, unsigned int pos);
+
+
+    wxArrayPtrVoid      m_bitmaps;  // Images associated with items
+    wxSize              m_usedImgSize;  // Size of bitmaps
 
 private:
+    int                 m_imgAreaWidth;  // Width and height of area next to text field
+    int                 m_fontHeight;
     bool                m_inResize;
 
     void Init();
+    void PostCreate();
 
     DECLARE_EVENT_TABLE()
 

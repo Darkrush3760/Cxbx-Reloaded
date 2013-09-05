@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (c) Julian Smart
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dragimag.h 33948 2005-05-04 18:57:50Z JS $
 // Licence:     wxWindows Licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -14,9 +14,9 @@
 
 #if wxUSE_DRAGIMAGE
 
-class WXDLLIMPEXP_FWD_CORE wxRect;
-class WXDLLIMPEXP_FWD_CORE wxMemoryDC;
-class WXDLLIMPEXP_FWD_CORE wxDC;
+class WXDLLEXPORT wxRect;
+class WXDLLEXPORT wxMemoryDC;
+class WXDLLEXPORT wxDC;
 
 #if defined(__WXMSW__)
 #   if defined(__WXUNIVERSAL__)

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:        wx/wizard.h
+// Name:        wizard.h
 // Purpose:     wxWizard class: a GUI control presenting the user with a
 //              sequence of dialogs which allows to simply perform some task
 // Author:      Vadim Zeitlin (partly based on work by Ron Kuris and Kevin B.
@@ -9,7 +9,7 @@
 //              Added wxWIZARD_HELP event
 //              Robert Vazan (sizers)
 // Created:     15.08.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: wizard.h 63262 2010-01-25 18:47:47Z JS $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,15 +33,6 @@
 // Extended style to specify a help button
 #define wxWIZARD_EX_HELPBUTTON   0x00000010
 
-// Placement flags
-#define wxWIZARD_VALIGN_TOP       0x01
-#define wxWIZARD_VALIGN_CENTRE    0x02
-#define wxWIZARD_VALIGN_BOTTOM    0x04
-#define wxWIZARD_HALIGN_LEFT      0x08
-#define wxWIZARD_HALIGN_CENTRE    0x10
-#define wxWIZARD_HALIGN_RIGHT     0x20
-#define wxWIZARD_TILE             0x40
-
 // forward declarations
 class WXDLLIMPEXP_FWD_ADV wxWizard;
 
@@ -63,10 +54,12 @@ public:
     // that no other parameters are needed because the wizard will resize and
     // reposition the page anyhow
     wxWizardPage(wxWizard *parent,
-                 const wxBitmap& bitmap = wxNullBitmap);
+                 const wxBitmap& bitmap = wxNullBitmap,
+                 const wxChar* resource = NULL);
 
     bool Create(wxWizard *parent,
-                const wxBitmap& bitmap = wxNullBitmap);
+                const wxBitmap& bitmap = wxNullBitmap,
+                const wxChar* resource = NULL);
 
     // these functions are used by the wizard to show another page when the
     // user chooses "Back" or "Next" button
@@ -126,21 +119,23 @@ public:
 
     // ctor takes the previous and next pages
     wxWizardPageSimple(wxWizard *parent,
-                       wxWizardPage *prev = NULL,
-                       wxWizardPage *next = NULL,
-                       const wxBitmap& bitmap = wxNullBitmap)
+                       wxWizardPage *prev = (wxWizardPage *)NULL,
+                       wxWizardPage *next = (wxWizardPage *)NULL,
+                       const wxBitmap& bitmap = wxNullBitmap,
+                       const wxChar* resource = NULL)
     {
-        Create(parent, prev, next, bitmap);
+        Create(parent, prev, next, bitmap, resource);
     }
 
     bool Create(wxWizard *parent = NULL, // let it be default ctor too
-                wxWizardPage *prev = NULL,
-                wxWizardPage *next = NULL,
-                const wxBitmap& bitmap = wxNullBitmap)
+                wxWizardPage *prev = (wxWizardPage *)NULL,
+                wxWizardPage *next = (wxWizardPage *)NULL,
+                const wxBitmap& bitmap = wxNullBitmap,
+                const wxChar* resource = NULL)
     {
         m_prev = prev;
         m_next = next;
-        return wxWizardPage::Create(parent, bitmap);
+        return wxWizardPage::Create(parent, bitmap, resource);
     }
 
     // the pointers may be also set later - but before starting the wizard
@@ -244,7 +239,7 @@ public:
     bool Validate() { return true; }
 
 private:
-    wxDECLARE_NO_COPY_CLASS(wxWizardBase);
+    DECLARE_NO_COPY_CLASS(wxWizardBase)
 };
 
 // include the real class declaration
@@ -272,31 +267,33 @@ public:
 
     wxWizardPage*   GetPage() const { return m_page; }
 
-    virtual wxEvent *Clone() const { return new wxWizardEvent(*this); }
-
 private:
     bool m_direction;
     wxWizardPage*    m_page;
 
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxWizardEvent)
+    DECLARE_DYNAMIC_CLASS(wxWizardEvent)
+    DECLARE_NO_COPY_CLASS(wxWizardEvent)
 };
 
 // ----------------------------------------------------------------------------
 // macros for handling wxWizardEvents
 // ----------------------------------------------------------------------------
 
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_CHANGED, wxWizardEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_CHANGING, wxWizardEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_CANCEL, wxWizardEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_HELP, wxWizardEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_FINISHED, wxWizardEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_SHOWN, wxWizardEvent );
-wxDECLARE_EXPORTED_EVENT( WXDLLIMPEXP_ADV, wxEVT_WIZARD_BEFORE_PAGE_CHANGED, wxWizardEvent );
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_CHANGED, 900)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_CHANGING, 901)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_CANCEL, 902)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_HELP, 903)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_FINISHED, 903)
+#if wxABI_VERSION >= 20811
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_ADV, wxEVT_WIZARD_PAGE_SHOWN, 904)
+#endif
+END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxWizardEventFunction)(wxWizardEvent&);
 
 #define wxWizardEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxWizardEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxWizardEventFunction, &func)
 
 #define wx__DECLARE_WIZARDEVT(evt, id, fn) \
     wx__DECLARE_EVT1(wxEVT_WIZARD_ ## evt, id, wxWizardEventHandler(fn))
@@ -307,10 +304,6 @@ typedef void (wxEvtHandler::*wxWizardEventFunction)(wxWizardEvent&);
 // the user pressed "<Back" or "Next>" button and the page is going to be
 // changed - unless the event handler vetoes the event
 #define EVT_WIZARD_PAGE_CHANGING(id, fn) wx__DECLARE_WIZARDEVT(PAGE_CHANGING, id, fn)
-
-// Called before GetNext/GetPrev is called, so that the handler can change state that will be
-// used when GetNext/GetPrev is called. PAGE_CHANGING is called too late to influence GetNext/GetPrev.
-#define EVT_WIZARD_BEFORE_PAGE_CHANGED(id, fn) wx__DECLARE_WIZARDEVT(BEFORE_PAGE_CHANGED, id, fn)
 
 // the user pressed "Cancel" button and the wizard is going to be dismissed -
 // unless the event handler vetoes the event

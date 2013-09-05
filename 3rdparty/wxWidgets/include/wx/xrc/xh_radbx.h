@@ -3,7 +3,7 @@
 // Purpose:     XML resource handler for wxRadioBox
 // Author:      Bob Mitchell
 // Created:     2000/03/21
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: xh_radbx.h 41590 2006-10-03 14:53:40Z VZ $
 // Copyright:   (c) 2000 Bob Mitchell and Verant Interactive
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -28,21 +28,14 @@ private:
     bool m_insideBox;
 
     // the items labels
-    wxArrayString m_labels;
+    wxArrayString labels;
 
-#if wxUSE_TOOLTIPS
     // the items tooltips
-    wxArrayString m_tooltips;
-#endif // wxUSE_TOOLTIPS
+    wxArrayString tooltips;
 
     // the item help text
-    wxArrayString m_helptexts;
-    wxArrayInt    m_helptextSpecified;
-
-    // if the corresponding array element is 1, the radiobox item is
-    // disabled/hidden
-    wxArrayInt m_isEnabled,
-               m_isShown;
+    wxArrayString helptexts;
+    wxArrayInt    helptextSpecified;
 };
 
 #endif // wxUSE_XRC && wxUSE_RADIOBOX

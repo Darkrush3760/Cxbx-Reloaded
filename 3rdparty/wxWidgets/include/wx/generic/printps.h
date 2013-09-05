@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/generic/printps.h
+// Name:        printps.h
 // Purpose:     wxPostScriptPrinter, wxPostScriptPrintPreview
 //              wxGenericPageSetupDialog
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: printps.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -21,10 +21,10 @@
 // Represents the printer: manages printing a wxPrintout object
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPostScriptPrinter : public wxPrinterBase
+class WXDLLEXPORT wxPostScriptPrinter : public wxPrinterBase
 {
 public:
-    wxPostScriptPrinter(wxPrintDialogData *data = NULL);
+    wxPostScriptPrinter(wxPrintDialogData *data = (wxPrintDialogData *) NULL);
     virtual ~wxPostScriptPrinter();
 
     virtual bool Print(wxWindow *parent, wxPrintout *printout, bool prompt = true);
@@ -40,12 +40,12 @@ private:
 // wxPrintout.
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxPostScriptPrintPreview : public wxPrintPreviewBase
+class WXDLLEXPORT wxPostScriptPrintPreview : public wxPrintPreviewBase
 {
 public:
     wxPostScriptPrintPreview(wxPrintout *printout,
-                             wxPrintout *printoutForPrinting = NULL,
-                             wxPrintDialogData *data = NULL);
+                             wxPrintout *printoutForPrinting = (wxPrintout *) NULL,
+                             wxPrintDialogData *data = (wxPrintDialogData *) NULL);
     wxPostScriptPrintPreview(wxPrintout *printout,
                              wxPrintout *printoutForPrinting,
                              wxPrintData *data);

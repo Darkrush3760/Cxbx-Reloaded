@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/fs_inet.h
+// Name:        fs_inet.h
 // Purpose:     HTTP and FTP file system
 // Author:      Vaclav Slavik
 // Copyright:   (c) 1999 Vaclav Slavik

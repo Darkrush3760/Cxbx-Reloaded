@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/html/helpctrl.h
+// Name:        helpctrl.h
 // Purpose:     wxHtmlHelpController
 // Notes:       Based on htmlhelp.cpp, implementing a monolithic
 //              HTML Help controller class,  by Vaclav Slavik
 // Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: helpctrl.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) Harm van der Heijden and Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -46,11 +46,7 @@ class WXDLLIMPEXP_HTML wxHtmlHelpController : public wxHelpControllerBase // wxE
 
 public:
     wxHtmlHelpController(int style = wxHF_DEFAULT_STYLE, wxWindow* parentWindow = NULL);
-    wxHtmlHelpController(wxWindow* parentWindow, int style = wxHF_DEFAULT_STYLE);
-    
     virtual ~wxHtmlHelpController();
-
-    void SetShouldPreventAppExit(bool enable);
 
     void SetTitleFormat(const wxString& format);
     void SetTempDir(const wxString& path) { m_helpData.SetTempDir(path); }
@@ -70,7 +66,6 @@ public:
     wxHtmlHelpFrame* GetFrame() { return m_helpFrame; }
     wxHtmlHelpDialog* GetDialog() { return m_helpDialog; }
 
-#if wxUSE_CONFIG
     void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString);
 
     // Assigns config object to the Ctrl. This config is then
@@ -78,7 +73,6 @@ public:
     // Ctrl and it's wxHtmlWindow
     virtual void ReadCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
     virtual void WriteCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
-#endif // wxUSE_CONFIG
 
     //// Backward compatibility with wxHelpController API
 
@@ -117,8 +111,6 @@ public:
     wxWindow* FindTopLevelWindow();
 
 protected:
-    void Init(int style);
-    
     virtual wxWindow* CreateHelpWindow();
     virtual wxHtmlHelpFrame* CreateHelpFrame(wxHtmlHelpData *data);
     virtual wxHtmlHelpDialog* CreateHelpDialog(wxHtmlHelpData *data);
@@ -126,18 +118,14 @@ protected:
 
     wxHtmlHelpData      m_helpData;
     wxHtmlHelpWindow*   m_helpWindow;
-#if wxUSE_CONFIG
     wxConfigBase *      m_Config;
     wxString            m_ConfigRoot;
-#endif // wxUSE_CONFIG
     wxString            m_titleFormat;
     int                 m_FrameStyle;
     wxHtmlHelpFrame*    m_helpFrame;
     wxHtmlHelpDialog*   m_helpDialog;
 
-    bool                m_shouldPreventAppExit;
-
-    wxDECLARE_NO_COPY_CLASS(wxHtmlHelpController);
+    DECLARE_NO_COPY_CLASS(wxHtmlHelpController)
 };
 
 /*

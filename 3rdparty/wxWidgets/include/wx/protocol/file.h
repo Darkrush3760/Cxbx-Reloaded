@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/protocol/file.h
+// Name:        file.h
 // Purpose:     File protocol
 // Author:      Guilhem Lavaux
 // Modified by:
 // Created:     1997
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: file.h 43836 2006-12-06 19:20:40Z VZ $
 // Copyright:   (c) 1997, 1998 Guilhem Lavaux
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -18,20 +18,18 @@
 
 #include "wx/protocol/protocol.h"
 
-class WXDLLIMPEXP_NET wxFileProto: public wxProtocol
-{
-public:
-    wxFileProto();
-    virtual ~wxFileProto();
-
-    bool Abort() { return true; }
-    wxString GetContentType() const { return wxEmptyString; }
-
-    wxInputStream *GetInputStream(const wxString& path);
-
+class WXDLLIMPEXP_NET wxFileProto: public wxProtocol {
+  DECLARE_DYNAMIC_CLASS_NO_COPY(wxFileProto)
+  DECLARE_PROTOCOL(wxFileProto)
 protected:
-    DECLARE_DYNAMIC_CLASS_NO_COPY(wxFileProto)
-    DECLARE_PROTOCOL(wxFileProto)
+  wxProtocolError m_error;
+public:
+  wxFileProto();
+  virtual ~wxFileProto();
+
+  wxProtocolError GetError() { return m_error; }
+  bool Abort() { return TRUE; }
+  wxInputStream *GetInputStream(const wxString& path);
 };
 
 #endif // wxUSE_PROTOCOL_FILE

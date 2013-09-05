@@ -4,13 +4,10 @@
 // Author:      Wlodzimierz ABX Skiba
 // Modified by:
 // Created:     01.05.2004
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: resources.h 27829 2004-06-16 06:17:27Z ABX $
 // Copyright:   (c) Wlodzimierz Skiba
-// Licence:     wxWindows licence
+// License:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
-
-// Windows CE dummy menu for SHCreateMenuBar()
-#define wxIDM_SHMENU             40000
 
 #define IDM_LEFT                 40001
 #define IDM_RIGHT                40002
@@ -25,3 +22,4 @@
 #define IDR_MENUBAR_LEFT_MENU    40031
 #define IDR_MENUBAR_RIGHT_MENU   40032
 #define IDR_MENUBAR_BOTH_MENUS   40033
+

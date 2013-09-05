@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2003-07-12
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: tbarwce.h 35650 2005-09-23 12:56:45Z MR $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@
 // Smartphones don't have toolbars, so use a dummy class
 #ifdef __SMARTPHONE__
 
-class WXDLLIMPEXP_CORE wxToolBar : public wxToolBarBase
+class WXDLLEXPORT wxToolBar : public wxToolBarBase
 {
 public:
     // ctors and dtor
@@ -63,22 +63,21 @@ protected:
                                           wxObject *clientData,
                                           const wxString& shortHelp,
                                           const wxString& longHelp);
-    virtual wxToolBarToolBase *CreateTool(wxControl *control,
-                                          const wxString& label);
+    virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
 private:
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxToolBar)
-    wxDECLARE_NO_COPY_CLASS(wxToolBar);
+    DECLARE_NO_COPY_CLASS(wxToolBar)
 };
 
 #else
 
 // For __POCKETPC__
 
-#include "wx/msw/toolbar.h"
+#include "wx/msw/tbar95.h"
 
-class WXDLLIMPEXP_CORE wxToolMenuBar : public wxToolBar
+class WXDLLEXPORT wxToolMenuBar : public wxToolBar
 {
 public:
     // ctors and dtor
@@ -149,8 +148,7 @@ protected:
                                           wxObject *clientData,
                                           const wxString& shortHelp,
                                           const wxString& longHelp);
-    virtual wxToolBarToolBase *CreateTool(wxControl *control,
-                                          const wxString& label);
+    virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
     // The menubar associated with this toolbar
     wxMenuBar*  m_menuBar;
@@ -158,7 +156,7 @@ protected:
 private:
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxToolMenuBar)
-    wxDECLARE_NO_COPY_CLASS(wxToolMenuBar);
+    DECLARE_NO_COPY_CLASS(wxToolMenuBar)
 };
 
 #endif

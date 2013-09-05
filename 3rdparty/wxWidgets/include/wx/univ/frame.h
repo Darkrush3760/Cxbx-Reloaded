@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     19.05.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: frame.h 42664 2006-10-29 20:39:31Z VZ $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 // wxFrame
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxFrame : public wxFrameBase
+class WXDLLEXPORT wxFrame : public wxFrameBase
 {
 public:
     wxFrame() {}
@@ -44,7 +44,7 @@ public:
 
 #if wxUSE_STATUSBAR
     virtual wxStatusBar* CreateStatusBar(int number = 1,
-                                         long style = wxSTB_DEFAULT_STYLE,
+                                         long style = wxST_SIZEGRIP,
                                          wxWindowID id = 0,
                                          const wxString& name = wxStatusLineNameStr);
 #endif // wxUSE_STATUSBAR
@@ -57,6 +57,9 @@ public:
 #endif // wxUSE_TOOLBAR
 
     virtual wxSize GetMinSize() const;
+
+    // sends wxSizeEvent to itself (used after attaching xxxBar)
+    virtual void SendSizeEvent();
 
 protected:
     void OnSize(wxSizeEvent& event);

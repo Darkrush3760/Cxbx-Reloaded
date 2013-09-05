@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     12.09.00
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: checklst.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Vadim Zeitlin
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 // wxCheckListBox
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxCheckListBox : public wxCheckListBoxBase
+class WXDLLEXPORT wxCheckListBox : public wxCheckListBoxBase
 {
 public:
     // ctors
@@ -84,11 +84,14 @@ public:
         return GetStdInputHandler(handlerDef);
     }
 
-protected:
     // override all methods which add/delete items to update m_checks array as
     // well
-    virtual void OnItemInserted(unsigned int pos);
-    virtual void DoDeleteOneItem(unsigned int n);
+    virtual void Delete(unsigned int n);
+
+protected:
+    virtual int DoAppend(const wxString& item);
+    virtual void DoInsertItems(const wxArrayString& items, unsigned int pos);
+    virtual void DoSetItems(const wxArrayString& items, void **clientData);
     virtual void DoClear();
 
     // draw the check items instead of the usual ones

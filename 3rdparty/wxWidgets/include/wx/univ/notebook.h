@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     01.02.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: notebook.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/arrstr.h"
 
-class WXDLLIMPEXP_FWD_CORE wxSpinButton;
+class WXDLLEXPORT wxSpinButton;
 
 // ----------------------------------------------------------------------------
 // the actions supported by this control
@@ -29,7 +29,7 @@ class WXDLLIMPEXP_FWD_CORE wxSpinButton;
 // wxNotebook
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxNotebook : public wxNotebookBase
+class WXDLLEXPORT wxNotebook : public wxNotebookBase
 {
 public:
     // ctors and such
@@ -64,6 +64,7 @@ public:
     // --------------------------------------
 
     virtual int SetSelection(size_t nPage) { return DoSetSelection(nPage, SetSelection_SendEvent); }
+    virtual int GetSelection() const { return (int) m_sel; }
 
     // changes selected page without sending events
     int ChangeSelection(size_t nPage) { return DoSetSelection(nPage); }
@@ -86,7 +87,7 @@ public:
                             wxNotebookPage *pPage,
                             const wxString& strText,
                             bool bSelect = false,
-                            int imageId = NO_IMAGE);
+                            int imageId = -1);
 
     // style tests
     // -----------
@@ -130,6 +131,7 @@ protected:
     void DoDrawTab(wxDC& dc, const wxRect& rect, size_t n);
 
     // resizing
+    virtual wxSize DoGetBestClientSize() const;
     virtual void DoMoveWindow(int x, int y, int width, int height);
     virtual void DoSetSize(int x, int y,
                            int width, int height,
@@ -187,7 +189,7 @@ protected:
 
     // return true if the tab has an associated image
     bool HasImage(int page) const
-        { return HasImageList() && m_images[page] != -1; }
+        { return m_imageList && m_images[page] != -1; }
 
     // get the part of the notebook reserved for the pages (slightly larger
     // than GetPageRect() as we draw a border and leave marginin between)
@@ -200,13 +202,16 @@ protected:
     wxSize GetSizeForPage(const wxSize& size) const;
 
     // scroll the tabs so that the first page shown becomes the given one
-    void ScrollTo(size_t page);
+    void ScrollTo(int page);
 
     // scroll the tabs so that the first page shown becomes the given one
-    void ScrollLastTo(size_t page);
+    void ScrollLastTo(int page);
 
     // the pages titles
     wxArrayString m_titles;
+
+    // the current selection
+    size_t m_sel;
 
     // the spin button to change the pages
     wxSpinButton *m_spinbtn;

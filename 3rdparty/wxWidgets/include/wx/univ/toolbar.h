@@ -4,7 +4,7 @@
 // Author:      Robert Roebling
 // Modified by:
 // Created:     10.09.00
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: toolbar.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) Robert Roebling
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,7 +14,7 @@
 
 #include "wx/button.h"      // for wxStdButtonInputHandler
 
-class WXDLLIMPEXP_FWD_CORE wxToolBarTool;
+class WXDLLEXPORT wxToolBarTool;
 
 // ----------------------------------------------------------------------------
 // the actions supported by this control
@@ -31,7 +31,7 @@ class WXDLLIMPEXP_FWD_CORE wxToolBarTool;
 // wxToolBar
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxToolBar : public wxToolBarBase
+class WXDLLEXPORT wxToolBar : public wxToolBarBase
 {
 public:
     // construction/destruction
@@ -98,8 +98,7 @@ protected:
                                           wxObject *clientData,
                                           const wxString& shortHelp,
                                           const wxString& longHelp);
-    virtual wxToolBarToolBase *CreateTool(wxControl *control,
-                                          const wxString& label);
+    virtual wxToolBarToolBase *CreateTool(wxControl *control);
 
     virtual wxSize DoGetBestClientSize() const;
     virtual void DoSetSize(int x, int y,

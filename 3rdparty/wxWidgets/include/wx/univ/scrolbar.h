@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     20.08.00
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: scrolbar.h 61872 2009-09-09 22:37:05Z VZ $
 // Copyright:   (c) 2000 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef _WX_UNIV_SCROLBAR_H_
 #define _WX_UNIV_SCROLBAR_H_
 
-class WXDLLIMPEXP_FWD_CORE wxScrollTimer;
+class WXDLLEXPORT wxScrollTimer;
 
 #include "wx/univ/scrarrow.h"
 #include "wx/renderer.h"
@@ -38,7 +38,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollTimer;
 // wxScrollBar
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxScrollBar : public wxScrollBarBase,
+class WXDLLEXPORT wxScrollBar : public wxScrollBarBase,
                                 public wxControlWithArrows
 {
 public:
@@ -192,7 +192,7 @@ private:
     // the object handling the arrows
     wxScrollArrows m_arrows;
 
-    friend WXDLLIMPEXP_CORE class wxControlRenderer; // for geometry methods
+    friend WXDLLEXPORT class wxControlRenderer; // for geometry methods
     friend class wxStdScrollBarInputHandler; // for geometry methods
 
     DECLARE_EVENT_TABLE()
@@ -203,7 +203,7 @@ private:
 // Standard scrollbar input handler which can be used as a base class
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxStdScrollBarInputHandler : public wxStdInputHandler
+class WXDLLEXPORT wxStdScrollBarInputHandler : public wxStdInputHandler
 {
 public:
     // constructor takes a renderer (used for scrollbar hit testing) and the

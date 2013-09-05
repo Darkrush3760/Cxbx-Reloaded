@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/5/2006 12:05:31 PM
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: richtextstyledlg.h 52117 2008-02-26 15:04:54Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,8 +15,6 @@
 /*!
  * Includes
  */
-
-#include "wx/richtext/richtextuicustomization.h"
 
 ////@begin includes
 ////@end includes
@@ -33,7 +31,6 @@
 class wxBoxSizer;
 class wxRichTextStyleListCtrl;
 class wxRichTextCtrl;
-class wxStdDialogButtonSizer;
 ////@end forward declarations
 
 class WXDLLIMPEXP_FWD_CORE wxButton;
@@ -67,8 +64,7 @@ class WXDLLIMPEXP_FWD_CORE wxCheckBox;
 #define wxRICHTEXT_ORGANISER_SHOW_CHARACTER 0x0100
 #define wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH 0x0200
 #define wxRICHTEXT_ORGANISER_SHOW_LIST      0x0400
-#define wxRICHTEXT_ORGANISER_SHOW_BOX       0x0800
-#define wxRICHTEXT_ORGANISER_SHOW_ALL       0x1000
+#define wxRICHTEXT_ORGANISER_SHOW_ALL       0x0800
 
 // Common combinations
 #define wxRICHTEXT_ORGANISER_ORGANISE (wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES|wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES)
@@ -83,7 +79,6 @@ class WXDLLIMPEXP_RICHTEXT wxRichTextStyleOrganiserDialog: public wxDialog
 {
     DECLARE_DYNAMIC_CLASS( wxRichTextStyleOrganiserDialog )
     DECLARE_EVENT_TABLE()
-    DECLARE_HELP_PROVISION()
 
 public:
     /// Constructors
@@ -161,12 +156,6 @@ public:
     /// wxEVT_UPDATE_UI event handler for ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_LIST
     void OnNewListUpdate( wxUpdateUIEvent& event );
 
-    /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_BOX
-    void OnNewBoxClick( wxCommandEvent& event );
-
-    /// wxEVT_UPDATE_UI event handler for ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_BOX
-    void OnNewBoxUpdate( wxUpdateUIEvent& event );
-
     /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_RICHTEXTSTYLEORGANISERDIALOG_APPLY
     void OnApplyClick( wxCommandEvent& event );
 
@@ -211,7 +200,6 @@ public:
     wxButton* m_newCharacter;
     wxButton* m_newParagraph;
     wxButton* m_newList;
-    wxButton* m_newBox;
     wxButton* m_applyStyle;
     wxButton* m_renameStyle;
     wxButton* m_editStyle;
@@ -219,7 +207,6 @@ public:
     wxButton* m_closeButton;
     wxBoxSizer* m_bottomButtonSizer;
     wxCheckBox* m_restartNumberingCtrl;
-    wxStdDialogButtonSizer* m_stdButtonSizer;
     wxButton* m_okButton;
     wxButton* m_cancelButton;
     /// Control identifiers
@@ -231,7 +218,6 @@ public:
         ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_CHAR = 10504,
         ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_PARA = 10505,
         ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_LIST = 10508,
-        ID_RICHTEXTSTYLEORGANISERDIALOG_NEW_BOX = 10512,
         ID_RICHTEXTSTYLEORGANISERDIALOG_APPLY = 10503,
         ID_RICHTEXTSTYLEORGANISERDIALOG_RENAME = 10502,
         ID_RICHTEXTSTYLEORGANISERDIALOG_EDIT = 10506,

@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/aui/tabmdi.h
+// Name:        wx/generic/tabmdi.h
 // Purpose:     Generic MDI (Multiple Document Interface) classes
 // Author:      Hans Van Leemputten
 // Modified by: Benjamin I. Williams / Kirix Corporation
 // Created:     29/07/2002
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: tabmdi.h 53135 2008-04-12 02:31:04Z VZ $
 // Copyright:   (c) Hans Van Leemputten
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ public:
     void SetArtProvider(wxAuiTabArt* provider);
     wxAuiTabArt* GetArtProvider();
     wxAuiNotebook* GetNotebook() const;
-
+    
 #if wxUSE_MENUS
     wxMenu* GetWindowMenu() const { return m_pWindowMenu; }
     void SetWindowMenu(wxMenu* pMenu);
@@ -70,6 +70,8 @@ public:
 #endif // wxUSE_MENUS
 
     void SetChildMenuBar(wxAuiMDIChildFrame *pChild);
+
+    virtual bool ProcessEvent(wxEvent& event);
 
     wxAuiMDIChildFrame *GetActiveChild() const;
     void SetActiveChild(wxAuiMDIChildFrame* pChildFrame);
@@ -101,10 +103,7 @@ protected:
     void AddWindowMenu(wxMenuBar *pMenuBar);
 
     void DoHandleMenu(wxCommandEvent &event);
-    void DoHandleUpdateUI(wxUpdateUIEvent &event);
 #endif // wxUSE_MENUS
-
-    virtual bool ProcessEvent(wxEvent& event);
 
     virtual void DoGetClientSize(int *width, int *height) const;
 
@@ -139,7 +138,7 @@ public:
                 const wxString& name = wxFrameNameStr);
 
 #if wxUSE_MENUS
-    virtual void SetMenuBar(wxMenuBar *menuBar);
+    virtual void SetMenuBar(wxMenuBar *menu_bar);
     virtual wxMenuBar *GetMenuBar() const;
 #endif // wxUSE_MENUS
 
@@ -148,14 +147,12 @@ public:
 
     virtual void SetIcons(const wxIconBundle& icons);
     virtual const wxIconBundle& GetIcons() const;
-
+    
     virtual void SetIcon(const wxIcon& icon);
     virtual const wxIcon& GetIcon() const;
 
     virtual void Activate();
     virtual bool Destroy();
-
-    virtual bool Show(bool show = true);
 
 #if wxUSE_STATUSBAR
     // no status bars
@@ -163,20 +160,27 @@ public:
                                          long WXUNUSED(style) = 1,
                                          wxWindowID WXUNUSED(winid) = 1,
                                          const wxString& WXUNUSED(name) = wxEmptyString)
-      { return NULL; }
+      { return (wxStatusBar*)NULL; }
 
-    virtual wxStatusBar *GetStatusBar() const { return NULL; }
+    virtual wxStatusBar *GetStatusBar() const { return (wxStatusBar*)NULL; }
     virtual void SetStatusText( const wxString &WXUNUSED(text), int WXUNUSED(number)=0 ) {}
     virtual void SetStatusWidths( int WXUNUSED(n), const int WXUNUSED(widths_field)[] ) {}
 #endif
 
+    // no size hints
+    virtual void DoSetSizeHints(int WXUNUSED(minW),
+                                int WXUNUSED(minH),
+                                int WXUNUSED(maxW) = wxDefaultCoord,
+                                int WXUNUSED(maxH) = wxDefaultCoord,
+                                int WXUNUSED(incW) = wxDefaultCoord,
+                                int WXUNUSED(incH) = wxDefaultCoord) {}
 #if wxUSE_TOOLBAR
     // no toolbar bars
     virtual wxToolBar* CreateToolBar(long WXUNUSED(style),
                                      wxWindowID WXUNUSED(winid),
                                      const wxString& WXUNUSED(name))
-        { return NULL; }
-    virtual wxToolBar *GetToolBar() const { return NULL; }
+        { return (wxToolBar*)NULL; }
+    virtual wxToolBar *GetToolBar() const { return (wxToolBar*)NULL; }
 #endif
 
 
@@ -197,16 +201,13 @@ public:
 
     void SetMDIParentFrame(wxAuiMDIParentFrame* parent);
     wxAuiMDIParentFrame* GetMDIParentFrame() const;
-
+    
 protected:
     void Init();
-    virtual void DoSetSize(int x, int y, int width, int height, int sizeFlags);
+    virtual bool Show(bool show = true);
+    virtual void DoSetSize(int x, int y, int width, int height, int size_flags);
     virtual void DoMoveWindow(int x, int y, int width, int height);
 
-    // no size hints
-    virtual void DoSetSizeHints(int WXUNUSED(minW), int WXUNUSED(minH),
-                                int WXUNUSED(maxW), int WXUNUSED(maxH),
-                                int WXUNUSED(incW), int WXUNUSED(incH)) {}
 public:
     // This function needs to be called when a size change is confirmed,
     // we needed this function to prevent anybody from the outside
@@ -216,12 +217,12 @@ public:
 
 protected:
     wxAuiMDIParentFrame* m_pMDIParentFrame;
-    wxRect m_mdiNewRect;
-    wxRect m_mdiCurRect;
+    wxRect m_mdi_newrect;
+    wxRect m_mdi_currect;
     wxString m_title;
     wxIcon m_icon;
-    wxIconBundle m_iconBundle;
-    bool m_activateOnCreate;
+    wxIconBundle m_icon_bundle;
+    bool m_activate_on_create;
 
 #if wxUSE_MENUS
     wxMenuBar* m_pMenuBar;
@@ -245,6 +246,7 @@ class WXDLLIMPEXP_AUI wxAuiMDIClientWindow : public wxAuiNotebook
 public:
     wxAuiMDIClientWindow();
     wxAuiMDIClientWindow(wxAuiMDIParentFrame *parent, long style = 0);
+    ~wxAuiMDIClientWindow();
 
     virtual bool CreateClient(wxAuiMDIParentFrame *parent,
                               long style = wxVSCROLL | wxHSCROLL);
@@ -253,7 +255,7 @@ public:
 
 protected:
 
-    void PageChanged(int oldSelection, int newSelection);
+    void PageChanged(int old_selection, int new_selection);
     void OnPageClose(wxAuiNotebookEvent& evt);
     void OnPageChanged(wxAuiNotebookEvent& evt);
     void OnSize(wxSizeEvent& evt);

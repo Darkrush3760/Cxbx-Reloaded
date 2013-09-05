@@ -1,9 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wx/univ/dialog.h
+// Name:        dialog.h
 // Purpose:     wxDialog class
 // Author:      Vaclav Slavik
 // Created:     2001/09/16
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: dialog.h 36891 2006-01-16 14:59:55Z MR $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -11,12 +11,12 @@
 #ifndef _WX_UNIV_DIALOG_H_
 #define _WX_UNIV_DIALOG_H_
 
-extern WXDLLIMPEXP_DATA_CORE(const char) wxDialogNameStr[];
-class WXDLLIMPEXP_FWD_CORE wxWindowDisabler;
-class WXDLLIMPEXP_FWD_CORE wxEventLoop;
+extern WXDLLEXPORT_DATA(const wxChar) wxDialogNameStr[];
+class WXDLLEXPORT wxWindowDisabler;
+class WXDLLEXPORT wxEventLoop;
 
 // Dialog boxes
-class WXDLLIMPEXP_CORE wxDialog : public wxDialogBase
+class WXDLLEXPORT wxDialog : public wxDialogBase
 {
 public:
     wxDialog() { Init(); }

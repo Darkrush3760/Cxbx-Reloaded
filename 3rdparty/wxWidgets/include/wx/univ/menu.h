@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by:
 // Created:     05.05.01
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: menu.h 48053 2007-08-13 17:07:01Z JS $
 // Copyright:   (c) 2001 SciTech Software, Inc. (www.scitechsoft.com)
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,18 +19,18 @@
 #include "wx/dynarray.h"
 
 // fwd declarations
-class WXDLLIMPEXP_FWD_CORE wxMenuInfo;
+class WXDLLEXPORT wxMenuInfo;
 WX_DECLARE_EXPORTED_OBJARRAY(wxMenuInfo, wxMenuInfoArray);
 
-class WXDLLIMPEXP_FWD_CORE wxMenuGeometryInfo;
-class WXDLLIMPEXP_FWD_CORE wxPopupMenuWindow;
-class WXDLLIMPEXP_FWD_CORE wxRenderer;
+class WXDLLEXPORT wxMenuGeometryInfo;
+class WXDLLEXPORT wxPopupMenuWindow;
+class WXDLLEXPORT wxRenderer;
 
 // ----------------------------------------------------------------------------
 // wxMenu
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMenu : public wxMenuBase
+class WXDLLEXPORT wxMenu : public wxMenuBase
 {
 public:
     // ctors and dtor
@@ -138,7 +138,7 @@ private:
 // wxMenuBar
 // ----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_CORE wxMenuBar : public wxMenuBarBase
+class WXDLLEXPORT wxMenuBar : public wxMenuBarBase
 {
 public:
     // ctors and dtor
@@ -155,8 +155,8 @@ public:
     virtual void EnableTop(size_t pos, bool enable);
     virtual bool IsEnabledTop(size_t pos) const;
 
-    virtual void SetMenuLabel(size_t pos, const wxString& label);
-    virtual wxString GetMenuLabel(size_t pos) const;
+    virtual void SetLabelTop(size_t pos, const wxString& label);
+    virtual wxString GetLabelTop(size_t pos) const;
 
     virtual void Attach(wxFrame *frame);
     virtual void Detach();
@@ -270,6 +270,13 @@ private:
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxMenuBar)
+
+public:
+
+#if wxABI_VERSION >= 20805
+    // Gets the original label at the top-level of the menubar
+    wxString GetMenuLabel(size_t pos) const;
+#endif
 };
 
 #endif // _WX_UNIV_MENU_H_

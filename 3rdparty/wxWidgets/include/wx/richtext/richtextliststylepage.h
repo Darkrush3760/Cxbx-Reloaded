@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     10/18/2006 11:36:37 AM
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: richtextliststylepage.h 42678 2006-10-29 22:01:06Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -15,8 +15,6 @@
 /*!
  * Includes
  */
-
-#include "wx/richtext/richtextdialogpage.h"
 
 ////@begin includes
 #include "wx/spinctrl.h"
@@ -30,7 +28,7 @@
 
 ////@begin control identifiers
 #define SYMBOL_WXRICHTEXTLISTSTYLEPAGE_STYLE wxRESIZE_BORDER|wxTAB_TRAVERSAL
-#define SYMBOL_WXRICHTEXTLISTSTYLEPAGE_TITLE wxEmptyString
+#define SYMBOL_WXRICHTEXTLISTSTYLEPAGE_TITLE _("wxRichTextListStylePage")
 #define SYMBOL_WXRICHTEXTLISTSTYLEPAGE_IDNAME ID_RICHTEXTLISTSTYLEPAGE
 #define SYMBOL_WXRICHTEXTLISTSTYLEPAGE_SIZE wxSize(400, 300)
 #define SYMBOL_WXRICHTEXTLISTSTYLEPAGE_POSITION wxDefaultPosition
@@ -40,11 +38,10 @@
  * wxRichTextListStylePage class declaration
  */
 
-class WXDLLIMPEXP_RICHTEXT wxRichTextListStylePage: public wxRichTextDialogPage
+class WXDLLIMPEXP_RICHTEXT wxRichTextListStylePage: public wxPanel
 {
     DECLARE_DYNAMIC_CLASS( wxRichTextListStylePage )
     DECLARE_EVENT_TABLE()
-    DECLARE_HELP_PROVISION()
 
 public:
     /// Constructors

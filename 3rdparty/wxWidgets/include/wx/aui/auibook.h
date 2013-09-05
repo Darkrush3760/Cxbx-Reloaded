@@ -1,8 +1,8 @@
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // Name:        wx/aui/auibook.h
 // Purpose:     wxaui: wx advanced user interface - notebook
 // Author:      Benjamin I. Williams
-// Modified by: Jens Lody
+// Modified by:
 // Created:     2006-06-28
 // Copyright:   (C) Copyright 2006, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
@@ -21,10 +21,10 @@
 
 #if wxUSE_AUI
 
-#include "wx/aui/tabart.h"
 #include "wx/aui/framemanager.h"
-#include "wx/bookctrl.h"
-#include "wx/containr.h"
+#include "wx/aui/dockart.h"
+#include "wx/aui/floatpane.h"
+#include "wx/control.h"
 
 
 class wxAuiNotebook;
@@ -60,28 +60,40 @@ enum wxAuiNotebookOption
 
 // aui notebook event class
 
-class WXDLLIMPEXP_AUI wxAuiNotebookEvent : public wxBookCtrlEvent
+class WXDLLIMPEXP_AUI wxAuiNotebookEvent : public wxNotifyEvent
 {
 public:
-    wxAuiNotebookEvent(wxEventType commandType = wxEVT_NULL,
-                       int winId = 0)
-          : wxBookCtrlEvent(commandType, winId)
+    wxAuiNotebookEvent(wxEventType command_type = wxEVT_NULL,
+                       int win_id = 0)
+          : wxNotifyEvent(command_type, win_id)
     {
-        m_dragSource = NULL;
+        old_selection = -1;
+        selection = -1;
+        drag_source = NULL;
     }
 #ifndef SWIG
-    wxAuiNotebookEvent(const wxAuiNotebookEvent& c) : wxBookCtrlEvent(c)
+    wxAuiNotebookEvent(const wxAuiNotebookEvent& c) : wxNotifyEvent(c)
     {
-        m_dragSource = c.m_dragSource;
+        old_selection = c.old_selection;
+        selection = c.selection;
+        drag_source = c.drag_source;
     }
 #endif
     wxEvent *Clone() const { return new wxAuiNotebookEvent(*this); }
 
-    void SetDragSource(wxAuiNotebook* s) { m_dragSource = s; }
-    wxAuiNotebook* GetDragSource() const { return m_dragSource; }
+    void SetSelection(int s) { selection = s; m_commandInt = s; }
+    int GetSelection() const { return selection; }
 
-private:
-    wxAuiNotebook* m_dragSource;
+    void SetOldSelection(int s) { old_selection = s; }
+    int GetOldSelection() const { return old_selection; }
+
+    void SetDragSource(wxAuiNotebook* s) { drag_source = s; }
+    wxAuiNotebook* GetDragSource() const { return drag_source; }
+
+public:
+    int old_selection;
+    int selection;
+    wxAuiNotebook* drag_source;
 
 #ifndef SWIG
 private:
@@ -95,7 +107,6 @@ class WXDLLIMPEXP_AUI wxAuiNotebookPage
 public:
     wxWindow* window;     // page's associated window
     wxString caption;     // caption displayed on the tab
-    wxString tooltip;     // tooltip displayed when hovering over tab title
     wxBitmap bitmap;      // tab's bitmap
     wxRect rect;          // tab's hit rectangle
     bool active;          // true if the page is currently active
@@ -106,10 +117,10 @@ class WXDLLIMPEXP_AUI wxAuiTabContainerButton
 public:
 
     int id;               // button's id
-    int curState;        // current state (normal, hover, pressed, etc.)
+    int cur_state;        // current state (normal, hover, pressed, etc.)
     int location;         // buttons location (wxLEFT, wxRIGHT, or wxCENTER)
     wxBitmap bitmap;      // button's hover bitmap
-    wxBitmap disBitmap;  // button's disabled bitmap
+    wxBitmap dis_bitmap;  // button's disabled bitmap
     wxRect rect;          // button's hit rectangle
 };
 
@@ -118,6 +129,247 @@ public:
 WX_DECLARE_USER_EXPORTED_OBJARRAY(wxAuiNotebookPage, wxAuiNotebookPageArray, WXDLLIMPEXP_AUI);
 WX_DECLARE_USER_EXPORTED_OBJARRAY(wxAuiTabContainerButton, wxAuiTabContainerButtonArray, WXDLLIMPEXP_AUI);
 #endif
+
+
+// tab art class
+
+class WXDLLIMPEXP_AUI wxAuiTabArt
+{
+public:
+
+    wxAuiTabArt() { }
+    virtual ~wxAuiTabArt() { }
+
+    virtual wxAuiTabArt* Clone() = 0;
+    virtual void SetFlags(unsigned int flags) = 0;
+
+    virtual void SetSizingInfo(const wxSize& tab_ctrl_size,
+                               size_t tab_count) = 0;
+
+    virtual void SetNormalFont(const wxFont& font) = 0;
+    virtual void SetSelectedFont(const wxFont& font) = 0;
+    virtual void SetMeasuringFont(const wxFont& font) = 0;
+
+    virtual void DrawBackground(
+                         wxDC& dc,
+                         wxWindow* wnd,
+                         const wxRect& rect) = 0;
+
+    virtual void DrawTab(wxDC& dc,
+                         wxWindow* wnd,
+                         const wxAuiNotebookPage& pane,
+                         const wxRect& in_rect,
+                         int close_button_state,
+                         wxRect* out_tab_rect,
+                         wxRect* out_button_rect,
+                         int* x_extent) = 0;
+
+    virtual void DrawButton(
+                         wxDC& dc,
+                         wxWindow* wnd,
+                         const wxRect& in_rect,
+                         int bitmap_id,
+                         int button_state,
+                         int orientation,
+                         wxRect* out_rect) = 0;
+
+    virtual wxSize GetTabSize(
+                         wxDC& dc,
+                         wxWindow* wnd,
+                         const wxString& caption,
+                         const wxBitmap& bitmap,
+                         bool active,
+                         int close_button_state,
+                         int* x_extent) = 0;
+
+    virtual int ShowDropDown(
+                         wxWindow* wnd,
+                         const wxAuiNotebookPageArray& items,
+                         int active_idx) = 0;
+
+    virtual int GetIndentSize() = 0;
+
+    virtual int GetBestTabCtrlSize(
+                         wxWindow* wnd,
+                         const wxAuiNotebookPageArray& pages,
+                         const wxSize& required_bmp_size) = 0;
+};
+
+
+class WXDLLIMPEXP_AUI wxAuiDefaultTabArt : public wxAuiTabArt
+{
+
+public:
+
+    wxAuiDefaultTabArt();
+    virtual ~wxAuiDefaultTabArt();
+
+    wxAuiTabArt* Clone();
+    void SetFlags(unsigned int flags);
+    void SetSizingInfo(const wxSize& tab_ctrl_size,
+                       size_t tab_count);
+
+    void SetNormalFont(const wxFont& font);
+    void SetSelectedFont(const wxFont& font);
+    void SetMeasuringFont(const wxFont& font);
+
+    void DrawBackground(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxRect& rect);
+
+    void DrawTab(wxDC& dc,
+                 wxWindow* wnd,
+                 const wxAuiNotebookPage& pane,
+                 const wxRect& in_rect,
+                 int close_button_state,
+                 wxRect* out_tab_rect,
+                 wxRect* out_button_rect,
+                 int* x_extent);
+
+    void DrawButton(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxRect& in_rect,
+                 int bitmap_id,
+                 int button_state,
+                 int orientation,
+                 wxRect* out_rect);
+
+    int GetIndentSize();
+
+    wxSize GetTabSize(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxString& caption,
+                 const wxBitmap& bitmap,
+                 bool active,
+                 int close_button_state,
+                 int* x_extent);
+
+    int ShowDropDown(
+                 wxWindow* wnd,
+                 const wxAuiNotebookPageArray& items,
+                 int active_idx);
+
+    int GetBestTabCtrlSize(wxWindow* wnd,
+                 const wxAuiNotebookPageArray& pages,
+                 const wxSize& required_bmp_size);
+
+protected:
+
+    wxFont m_normal_font;
+    wxFont m_selected_font;
+    wxFont m_measuring_font;
+    wxColour m_base_colour;
+    wxPen m_base_colour_pen;
+    wxPen m_border_pen;
+    wxBrush m_base_colour_brush;
+    wxBitmap m_active_close_bmp;
+    wxBitmap m_disabled_close_bmp;
+    wxBitmap m_active_left_bmp;
+    wxBitmap m_disabled_left_bmp;
+    wxBitmap m_active_right_bmp;
+    wxBitmap m_disabled_right_bmp;
+    wxBitmap m_active_windowlist_bmp;
+    wxBitmap m_disabled_windowlist_bmp;
+
+    int m_fixed_tab_width;
+    int m_tab_ctrl_height;
+    unsigned int m_flags;
+};
+
+
+class WXDLLIMPEXP_AUI wxAuiSimpleTabArt : public wxAuiTabArt
+{
+
+public:
+
+    wxAuiSimpleTabArt();
+    virtual ~wxAuiSimpleTabArt();
+
+    wxAuiTabArt* Clone();
+    void SetFlags(unsigned int flags);
+
+    void SetSizingInfo(const wxSize& tab_ctrl_size,
+                       size_t tab_count);
+
+    void SetNormalFont(const wxFont& font);
+    void SetSelectedFont(const wxFont& font);
+    void SetMeasuringFont(const wxFont& font);
+
+    void DrawBackground(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxRect& rect);
+
+    void DrawTab(wxDC& dc,
+                 wxWindow* wnd,
+                 const wxAuiNotebookPage& pane,
+                 const wxRect& in_rect,
+                 int close_button_state,
+                 wxRect* out_tab_rect,
+                 wxRect* out_button_rect,
+                 int* x_extent);
+
+    void DrawButton(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxRect& in_rect,
+                 int bitmap_id,
+                 int button_state,
+                 int orientation,
+                 wxRect* out_rect);
+
+    int GetIndentSize();
+
+    wxSize GetTabSize(
+                 wxDC& dc,
+                 wxWindow* wnd,
+                 const wxString& caption,
+                 const wxBitmap& bitmap,
+                 bool active,
+                 int close_button_state,
+                 int* x_extent);
+
+    int ShowDropDown(
+                 wxWindow* wnd,
+                 const wxAuiNotebookPageArray& items,
+                 int active_idx);
+
+    int GetBestTabCtrlSize(wxWindow* wnd,
+                 const wxAuiNotebookPageArray& pages,
+                 const wxSize& required_bmp_size);
+
+protected:
+
+    wxFont m_normal_font;
+    wxFont m_selected_font;
+    wxFont m_measuring_font;
+    wxPen m_normal_bkpen;
+    wxPen m_selected_bkpen;
+    wxBrush m_normal_bkbrush;
+    wxBrush m_selected_bkbrush;
+    wxBrush m_bkbrush;
+    wxBitmap m_active_close_bmp;
+    wxBitmap m_disabled_close_bmp;
+    wxBitmap m_active_left_bmp;
+    wxBitmap m_disabled_left_bmp;
+    wxBitmap m_active_right_bmp;
+    wxBitmap m_disabled_right_bmp;
+    wxBitmap m_active_windowlist_bmp;
+    wxBitmap m_disabled_windowlist_bmp;
+
+    int m_fixed_tab_width;
+    unsigned int m_flags;
+};
+
+
+
+
+
+
+
 
 
 class WXDLLIMPEXP_AUI wxAuiTabContainer
@@ -135,7 +387,7 @@ public:
 
     bool AddPage(wxWindow* page, const wxAuiNotebookPage& info);
     bool InsertPage(wxWindow* page, const wxAuiNotebookPage& info, size_t idx);
-    bool MovePage(wxWindow* page, size_t newIdx);
+    bool MovePage(wxWindow* page, size_t new_idx);
     bool RemovePage(wxWindow* page);
     bool SetActivePage(wxWindow* page);
     bool SetActivePage(size_t page);
@@ -149,19 +401,17 @@ public:
     wxAuiNotebookPage& GetPage(size_t idx);
     const wxAuiNotebookPage& GetPage(size_t idx) const;
     wxAuiNotebookPageArray& GetPages();
-    void SetNormalFont(const wxFont& normalFont);
-    void SetSelectedFont(const wxFont& selectedFont);
-    void SetMeasuringFont(const wxFont& measuringFont);
-    void SetColour(const wxColour& colour);
-    void SetActiveColour(const wxColour& colour);
+    void SetNormalFont(const wxFont& normal_font);
+    void SetSelectedFont(const wxFont& selected_font);
+    void SetMeasuringFont(const wxFont& measuring_font);
     void DoShowHide();
     void SetRect(const wxRect& rect);
 
     void RemoveButton(int id);
     void AddButton(int id,
                    int location,
-                   const wxBitmap& normalBitmap = wxNullBitmap,
-                   const wxBitmap& disabledBitmap = wxNullBitmap);
+                   const wxBitmap& normal_bitmap = wxNullBitmap,
+                   const wxBitmap& disabled_bitmap = wxNullBitmap);
 
     size_t GetTabOffset() const;
     void SetTabOffset(size_t offset);
@@ -181,9 +431,9 @@ protected:
     wxAuiTabArt* m_art;
     wxAuiNotebookPageArray m_pages;
     wxAuiTabContainerButtonArray m_buttons;
-    wxAuiTabContainerButtonArray m_tabCloseButtons;
+    wxAuiTabContainerButtonArray m_tab_close_buttons;
     wxRect m_rect;
-    size_t m_tabOffset;
+    size_t m_tab_offset;
     unsigned int m_flags;
 };
 
@@ -202,37 +452,41 @@ public:
 
     ~wxAuiTabCtrl();
 
-    bool IsDragging() const { return m_isDragging; }
+#if wxABI_VERSION >= 20805
+    bool IsDragging() const { return m_is_dragging; }
+#endif
 
 protected:
-    // choose the default border for this window
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
 
     void OnPaint(wxPaintEvent& evt);
     void OnEraseBackground(wxEraseEvent& evt);
     void OnSize(wxSizeEvent& evt);
     void OnLeftDown(wxMouseEvent& evt);
-    void OnLeftDClick(wxMouseEvent& evt);
     void OnLeftUp(wxMouseEvent& evt);
+#if wxABI_VERSION >= 20805
     void OnMiddleDown(wxMouseEvent& evt);
     void OnMiddleUp(wxMouseEvent& evt);
     void OnRightDown(wxMouseEvent& evt);
     void OnRightUp(wxMouseEvent& evt);
+    void OnLeftDClick(wxMouseEvent& evt);
+    void OnSetFocus(wxFocusEvent& evt);
+    void OnKillFocus(wxFocusEvent& evt);
+    void OnChar(wxKeyEvent& evt);
+#endif
+#if wxABI_VERSION >= 20809
+    void OnCaptureLost(wxMouseCaptureLostEvent& evt);
+#endif
     void OnMotion(wxMouseEvent& evt);
     void OnLeaveWindow(wxMouseEvent& evt);
     void OnButton(wxAuiNotebookEvent& evt);
-    void OnSetFocus(wxFocusEvent& event);
-    void OnKillFocus(wxFocusEvent& event);
-    void OnChar(wxKeyEvent& event);
-    void OnCaptureLost(wxMouseCaptureLostEvent& evt);
 
 protected:
 
-    wxPoint m_clickPt;
-    wxWindow* m_clickTab;
-    bool m_isDragging;
-    wxAuiTabContainerButton* m_hoverButton;
-    wxAuiTabContainerButton* m_pressedButton;
+    wxPoint m_click_pt;
+    wxWindow* m_click_tab;
+    bool m_is_dragging;
+    wxAuiTabContainerButton* m_hover_button;
+    wxAuiTabContainerButton* m_pressed_button;
 
 #ifndef SWIG
     DECLARE_CLASS(wxAuiTabCtrl)
@@ -243,22 +497,18 @@ protected:
 
 
 
-class WXDLLIMPEXP_AUI wxAuiNotebook : public wxNavigationEnabled<wxBookCtrlBase>
+class WXDLLIMPEXP_AUI wxAuiNotebook : public wxControl
 {
 
 public:
 
-    wxAuiNotebook() { Init(); }
+    wxAuiNotebook();
 
     wxAuiNotebook(wxWindow* parent,
                   wxWindowID id = wxID_ANY,
                   const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = wxDefaultSize,
-                  long style = wxAUI_NB_DEFAULT_STYLE)
-    {
-        Init();
-        Create(parent, id, pos, size, style);
-    }
+                  long style = wxAUI_NB_DEFAULT_STYLE);
 
     virtual ~wxAuiNotebook();
 
@@ -280,7 +530,7 @@ public:
                  bool select = false,
                  const wxBitmap& bitmap = wxNullBitmap);
 
-    bool InsertPage(size_t pageIdx,
+    bool InsertPage(size_t page_idx,
                     wxWindow* page,
                     const wxString& caption,
                     bool select = false,
@@ -289,26 +539,26 @@ public:
     bool DeletePage(size_t page);
     bool RemovePage(size_t page);
 
-    virtual size_t GetPageCount() const;
-    virtual wxWindow* GetPage(size_t pageIdx) const;
-    int GetPageIndex(wxWindow* pageWnd) const;
+    size_t GetPageCount() const;
+    wxWindow* GetPage(size_t page_idx) const;
+    int GetPageIndex(wxWindow* page_wnd) const;
 
     bool SetPageText(size_t page, const wxString& text);
-    wxString GetPageText(size_t pageIdx) const;
-
-    bool SetPageToolTip(size_t page, const wxString& text);
-    wxString GetPageToolTip(size_t pageIdx) const;
+    wxString GetPageText(size_t page_idx) const;
 
     bool SetPageBitmap(size_t page, const wxBitmap& bitmap);
-    wxBitmap GetPageBitmap(size_t pageIdx) const;
+    wxBitmap GetPageBitmap(size_t page_idx) const;
 
-    int SetSelection(size_t newPage);
+    size_t SetSelection(size_t new_page);
     int GetSelection() const;
 
     virtual void Split(size_t page, int direction);
 
+#if wxABI_VERSION >= 20801
     const wxAuiManager& GetAuiManager() const { return m_mgr; }
+#endif
 
+#if wxABI_VERSION >= 20805
     // Sets the normal font
     void SetNormalFont(const wxFont& font);
 
@@ -327,62 +577,26 @@ public:
     // Gets the height of the notebook for a given page height
     int GetHeightForPageHeight(int pageHeight);
 
+    // Advances the selection, generation page selection events
+    void AdvanceSelection(bool forward = true);
+
     // Shows the window menu
     bool ShowWindowMenu();
-
-    // we do have multiple pages
-    virtual bool HasMultiplePages() const { return true; }
-
-    // we don't want focus for ourselves
-    // virtual bool AcceptsFocus() const { return false; }
-
-    //wxBookCtrlBase functions
-
-    virtual void SetPageSize (const wxSize &size);
-    virtual int  HitTest (const wxPoint &pt, long *flags=NULL) const;
-
-    virtual int GetPageImage(size_t n) const;
-    virtual bool SetPageImage(size_t n, int imageId);
-
-    virtual int ChangeSelection(size_t n);
-
-    virtual bool AddPage(wxWindow *page, const wxString &text, bool select, 
-                         int imageId);
-    virtual bool DeleteAllPages();
-    virtual bool InsertPage(size_t index, wxWindow *page, const wxString &text,
-                            bool select, int imageId);
+#endif
 
 protected:
-    // Common part of all ctors.
-    void Init();
-
-    // choose the default border for this window
-    virtual wxBorder GetDefaultBorder() const { return wxBORDER_NONE; }
-
-    // Redo sizing after thawing
-    virtual void DoThaw();
 
     // these can be overridden
-
-    // update the height, return true if it was done or false if the new height
-    // calculated by CalculateTabCtrlHeight() is the same as the old one
-    virtual bool UpdateTabCtrlHeight();
-
+    virtual void UpdateTabCtrlHeight();
     virtual int CalculateTabCtrlHeight();
     virtual wxSize CalculateNewSplitSize();
-
-    // remove the page and return a pointer to it
-    virtual wxWindow *DoRemovePage(size_t WXUNUSED(page)) { return NULL; }
-
-    //A general selection function
-    virtual int DoModifySelection(size_t n, bool events);
 
 protected:
 
     void DoSizing();
     void InitNotebook(long style);
     wxAuiTabCtrl* GetTabCtrlFromPoint(const wxPoint& pt);
-    wxWindow* GetTabFrameFromTabCtrl(wxWindow* tabCtrl);
+    wxWindow* GetTabFrameFromTabCtrl(wxWindow* tab_ctrl);
     wxAuiTabCtrl* GetActiveTabCtrl();
     bool FindTab(wxWindow* page, wxAuiTabCtrl** ctrl, int* idx);
     void RemoveEmptyTabFrames();
@@ -390,45 +604,38 @@ protected:
 
 protected:
 
-    void OnChildFocusNotebook(wxChildFocusEvent& evt);
+    void OnChildFocus(wxChildFocusEvent& evt);
     void OnRender(wxAuiManagerEvent& evt);
     void OnSize(wxSizeEvent& evt);
-    void OnTabClicked(wxAuiNotebookEvent& evt);
-    void OnTabBeginDrag(wxAuiNotebookEvent& evt);
-    void OnTabDragMotion(wxAuiNotebookEvent& evt);
-    void OnTabEndDrag(wxAuiNotebookEvent& evt);
-    void OnTabCancelDrag(wxAuiNotebookEvent& evt);
-    void OnTabButton(wxAuiNotebookEvent& evt);
-    void OnTabMiddleDown(wxAuiNotebookEvent& evt);
-    void OnTabMiddleUp(wxAuiNotebookEvent& evt);
-    void OnTabRightDown(wxAuiNotebookEvent& evt);
-    void OnTabRightUp(wxAuiNotebookEvent& evt);
-    void OnTabBgDClick(wxAuiNotebookEvent& evt);
-    void OnNavigationKeyNotebook(wxNavigationKeyEvent& event);
-
-    // set selection to the given window (which must be non-NULL and be one of
-    // our pages, otherwise an assert is raised)
-    void SetSelectionToWindow(wxWindow *win);
-    void SetSelectionToPage(const wxAuiNotebookPage& page)
-    {
-        SetSelectionToWindow(page.window);
-    }
+    void OnTabClicked(wxCommandEvent& evt);
+    void OnTabBeginDrag(wxCommandEvent& evt);
+    void OnTabDragMotion(wxCommandEvent& evt);
+    void OnTabEndDrag(wxCommandEvent& evt);
+    void OnTabButton(wxCommandEvent& evt);
+#if wxABI_VERSION >= 20805
+    void OnTabMiddleDown(wxCommandEvent& evt);
+    void OnTabMiddleUp(wxCommandEvent& evt);
+    void OnTabRightDown(wxCommandEvent& evt);
+    void OnTabRightUp(wxCommandEvent& evt);
+    void OnNavigationKey(wxNavigationKeyEvent& event);
+    void OnTabBgDClick(wxCommandEvent& evt);
+#endif
 
 protected:
 
     wxAuiManager m_mgr;
     wxAuiTabContainer m_tabs;
-    int m_curPage;
-    int m_tabIdCounter;
-    wxWindow* m_dummyWnd;
+    int m_curpage;
+    int m_tab_id_counter;
+    wxWindow* m_dummy_wnd;
 
-    wxSize m_requestedBmpSize;
-    int m_requestedTabCtrlHeight;
-    wxFont m_selectedFont;
-    wxFont m_normalFont;
-    int m_tabCtrlHeight;
+    wxSize m_requested_bmp_size;
+    int m_requested_tabctrl_height;
+    wxFont m_selected_font;
+    wxFont m_normal_font;
+    int m_tab_ctrl_height;
 
-    int m_lastDragX;
+    int m_last_drag_x;
     unsigned int m_flags;
 
 #ifndef SWIG
@@ -444,26 +651,30 @@ protected:
 
 #ifndef SWIG
 
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGING, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSED, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_BUTTON, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_BEGIN_DRAG, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_END_DRAG, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_ALLOW_DND, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE, wxAuiNotebookEvent);
-wxDECLARE_EXPORTED_EVENT(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK, wxAuiNotebookEvent);
+BEGIN_DECLARE_EVENT_TYPES()
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGING, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_BUTTON, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_BEGIN_DRAG, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_END_DRAG, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_ALLOW_DND, 0)
+#if wxABI_VERSION >= 20805
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSED, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE, 0)
+    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_AUI, wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK, 0)
+#endif
+END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxAuiNotebookEventFunction)(wxAuiNotebookEvent&);
 
 #define wxAuiNotebookEventHandler(func) \
-    wxEVENT_HANDLER_CAST(wxAuiNotebookEventFunction, func)
+    (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxAuiNotebookEventFunction, &func)
 
 #define EVT_AUINOTEBOOK_PAGE_CLOSE(winid, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, winid, wxAuiNotebookEventHandler(fn))
@@ -483,8 +694,8 @@ typedef void (wxEvtHandler::*wxAuiNotebookEventFunction)(wxAuiNotebookEvent&);
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION, winid, wxAuiNotebookEventHandler(fn))
 #define EVT_AUINOTEBOOK_ALLOW_DND(winid, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_ALLOW_DND, winid, wxAuiNotebookEventHandler(fn))
-#define EVT_AUINOTEBOOK_DRAG_DONE(winid, fn) \
-    wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE, winid, wxAuiNotebookEventHandler(fn))
+
+#if wxABI_VERSION >= 20805
 #define EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(winid, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN, winid, wxAuiNotebookEventHandler(fn))
 #define EVT_AUINOTEBOOK_TAB_MIDDLE_UP(winid, fn) \
@@ -493,8 +704,12 @@ typedef void (wxEvtHandler::*wxAuiNotebookEventFunction)(wxAuiNotebookEvent&);
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN, winid, wxAuiNotebookEventHandler(fn))
 #define EVT_AUINOTEBOOK_TAB_RIGHT_UP(winid, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP, winid, wxAuiNotebookEventHandler(fn))
+#define EVT_AUINOTEBOOK_DRAG_DONE(winid, fn) \
+    wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE, winid, wxAuiNotebookEventHandler(fn))
 #define EVT_AUINOTEBOOK_BG_DCLICK(winid, fn) \
     wx__DECLARE_EVT1(wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK, winid, wxAuiNotebookEventHandler(fn))
+#endif
+
 #else
 
 // wxpython/swig event work
@@ -508,11 +723,11 @@ typedef void (wxEvtHandler::*wxAuiNotebookEventFunction)(wxAuiNotebookEvent&);
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION;
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_ALLOW_DND;
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE;
+%constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK;
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN;
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP;
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN;
 %constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP;
-%constant wxEventType wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK;
 
 %pythoncode {
     EVT_AUINOTEBOOK_PAGE_CLOSE = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE, 1 )
@@ -525,11 +740,11 @@ typedef void (wxEvtHandler::*wxAuiNotebookEventFunction)(wxAuiNotebookEvent&);
     EVT_AUINOTEBOOK_DRAG_MOTION = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION, 1 )
     EVT_AUINOTEBOOK_ALLOW_DND = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_ALLOW_DND, 1 )
     EVT_AUINOTEBOOK_DRAG_DONE = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE, 1 )
-    EVT__AUINOTEBOOK_TAB_MIDDLE_DOWN = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN, 1 )
-    EVT__AUINOTEBOOK_TAB_MIDDLE_UP = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP, 1 )
-    EVT__AUINOTEBOOK_TAB_RIGHT_DOWN = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN, 1 )
-    EVT__AUINOTEBOOK_TAB_RIGHT_UP = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP, 1 )
     EVT_AUINOTEBOOK_BG_DCLICK = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK, 1 )
+    EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN, 1 )
+    EVT_AUINOTEBOOK_TAB_MIDDLE_UP  = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP , 1 )
+    EVT_AUINOTEBOOK_TAB_RIGHT_DOWN = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN, 1 )
+    EVT_AUINOTEBOOK_TAB_RIGHT_UP = wx.PyEventBinder( wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP, 1 )
 }
 #endif
 

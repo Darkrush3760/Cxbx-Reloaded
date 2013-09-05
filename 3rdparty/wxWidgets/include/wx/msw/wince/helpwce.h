@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2003-07-12
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: helpwce.h 36026 2005-10-27 21:00:26Z JS $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@
 
 #include "wx/helpbase.h"
 
-class WXDLLIMPEXP_CORE wxWinceHelpController : public wxHelpControllerBase
+class WXDLLEXPORT wxWinceHelpController : public wxHelpControllerBase
 {
 public:
     wxWinceHelpController(wxWindow* parentWindow = NULL): wxHelpControllerBase(parentWindow) {}

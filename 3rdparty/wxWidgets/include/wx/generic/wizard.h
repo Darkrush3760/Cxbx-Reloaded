@@ -4,7 +4,7 @@
 // Author:      Vadim Zeitlin
 // Modified by: Robert Vazan (sizers)
 // Created:     28.09.99
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: wizard.h 49563 2007-10-31 20:46:21Z VZ $
 // Copyright:   (c) 1999 Vadim Zeitlin <zeitlin@dptmaths.ens-cachan.fr>
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,10 @@ public:
              const wxPoint& pos = wxDefaultPosition,
              long style = wxDEFAULT_DIALOG_STYLE);
     void Init();
+
+#if wxABI_VERSION >= 20804
     virtual ~wxWizard();
+#endif
 
     // implement base class pure virtuals
     virtual bool RunWizard(wxWizardPage *firstPage);
@@ -56,8 +59,10 @@ public:
     virtual void SetBorder(int border);
 
     /// set/get bitmap
+#if wxABI_VERSION >= 20805
     const wxBitmap& GetBitmap() const { return m_bitmap; }
     void SetBitmap(const wxBitmap& bitmap);
+#endif
 
     // implementation only from now on
     // -------------------------------
@@ -68,40 +73,17 @@ public:
     // show the prev/next page, but call TransferDataFromWindow on the current
     // page first and return false without changing the page if
     // TransferDataFromWindow() returns false - otherwise, returns true
-    virtual bool ShowPage(wxWizardPage *page, bool goingForward = true);
+    bool ShowPage(wxWizardPage *page, bool goingForward = true);
 
     // do fill the dialog with controls
     // this is app-overridable to, for example, set help and tooltip text
     virtual void DoCreateControls();
 
-    // Do the adaptation
-    virtual bool DoLayoutAdaptation();
-
-    // Set/get bitmap background colour
-    void SetBitmapBackgroundColour(const wxColour& colour) { m_bitmapBackgroundColour = colour; }
-    const wxColour& GetBitmapBackgroundColour() const { return m_bitmapBackgroundColour; }
-
-    // Set/get bitmap placement (centred, tiled etc.)
-    void SetBitmapPlacement(int placement) { m_bitmapPlacement = placement; }
-    int GetBitmapPlacement() const { return m_bitmapPlacement; }
-
-    // Set/get minimum bitmap width
-    void SetMinimumBitmapWidth(int w) { m_bitmapMinimumWidth = w; }
-    int GetMinimumBitmapWidth() const { return m_bitmapMinimumWidth; }
-
-    // Tile bitmap
-    static bool TileBitmap(const wxRect& rect, wxDC& dc, const wxBitmap& bitmap);
-
 protected:
     // for compatibility only, doesn't do anything any more
     void FinishLayout() { }
 
-    // Do fit, and adjust to screen size if necessary
-    virtual void DoWizardLayout();
-
-    // Resize bitmap if necessary
-    virtual bool ResizeBitmap(wxBitmap& bmp);
-
+private:
     // was the dialog really created?
     bool WasCreated() const { return m_btnPrev != NULL; }
 
@@ -150,20 +132,11 @@ protected:
     // Actual position and size of pages
     wxWizardSizer *m_sizerPage;
 
-    // Bitmap background colour if resizing bitmap
-    wxColour    m_bitmapBackgroundColour;
-
-    // Bitmap placement flags
-    int         m_bitmapPlacement;
-
-    // Minimum bitmap width
-    int         m_bitmapMinimumWidth;
-
     friend class wxWizardSizer;
 
     DECLARE_DYNAMIC_CLASS(wxWizard)
     DECLARE_EVENT_TABLE()
-    wxDECLARE_NO_COPY_CLASS(wxWizard);
+    DECLARE_NO_COPY_CLASS(wxWizard)
 };
 
 #endif // _WX_GENERIC_WIZARD_H_
